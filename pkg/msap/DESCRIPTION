@@ -1,0 +1,12 @@
+Package: msap
+Version: 0.1.1
+Date: 2012-05-08
+Title: Statistical analysis for Methilattion-Sensitive Amplification Polimorphism data
+Authors@R: person("Andres", "Perez-Figueroa", role = c("aut", "cre"), email = "anpefi@uvigo.es")
+Author: Andres Perez-Figueroa
+Maintainer: Andres Perez-Figueroa <anpefi@uvigo.es>
+Imports: ade4, scrime, pegas, cba
+Description: Statistical Analyses of Methylation Sensitive Amplification Polymorphism (MSAP) assays.
+License: GPL (>= 2)
+URL: http://msap.r-forge.r-project.org/
+BugReports: http://pkgname.bugtracker.url
