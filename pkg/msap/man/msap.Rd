@@ -1,4 +1,5 @@
 \name{msap}
+\alias{msap}
 
 \title{
 Diversity analysis of MSAP data
@@ -8,10 +9,8 @@ It performs all the analysis of MSAP data in order to asses both epigenetic and 
 }
 \usage{
 msap(datafile, name=datafile, uninformative=TRUE, nDec=4)
-
-
-
 }
+
 \arguments{
   \item{datafile}{
   String containing the url of the csv file with the data. Required.
@@ -37,25 +36,11 @@ msap(datafile, name=datafile, uninformative=TRUE, nDec=4)
 
   
 }
-\value{
 
-}
-
-\note{
-  
-}
-\references{
-
-}
 \author{
 Andres Perez-Figueroa (\email{anpefi@uvigo.es})
 }
 \seealso{
 \code{\link{rmsap-package}}
 }
-\examples{
 
-
-
-
-}
