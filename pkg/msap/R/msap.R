@@ -1,5 +1,5 @@
 # msap - Statistical analysis for Methilattion-Sensitive Amplification Polimorphism data
-# version: 0.1.1
+# version: 0.1-2
 # Author: Andrés Pérez-Figueroa (anpefi@uvigo.es)
 
 
@@ -7,32 +7,35 @@
 
 msap <- function(datafile, name=datafile, uninformative=TRUE, nDec=4){
 	#loading required packages
-	suppressPackageStartupMessages(require(ade4, warn.conflicts=FALSE))
-	suppressPackageStartupMessages(require(scrime, warn.conflicts=FALSE))
-	suppressPackageStartupMessages(require(pegas, warn.conflicts=FALSE))
-	suppressPackageStartupMessages(require(cba, warn.conflicts=FALSE))
+	#suppressPackageStartupMessages(require(ade4, warn.conflicts=FALSE))
+	#suppressPackageStartupMessages(require(scrime, warn.conflicts=FALSE))
+	#suppressPackageStartupMessages(require(pegas, warn.conflicts=FALSE))
+	#suppressPackageStartupMessages(require(cba, warn.conflicts=FALSE))
 	
 	cat("\nmsap - Statistical analysis for Methilation-Sensitive Amplification Polimorphism data\n")
 
 	#Read datafile
 	cat("\nReading ", datafile,"\n")
-	data <- read.csv(datafile, header=FALSE)
+	data <- read.csv(datafile, header=TRUE)
 	#data file should have these columns:
 	# 1. Label for factor levels (one-factor only)
 	# 2. Arbitrary label
 	# 3. Enzyme labels: HPA or MSP
 	# 4+. band presence/absence: 1/0
 	
+	#get the loci names
+	locus <- rownames(data)[4:length(data[1,])]
+	#Set the first columns
 	#sorting
-	data <- data[with(data, order(V1,V2, V3)),]
+	data <- data[with(data, order(data[,1],data[,2],data[,3])),]
 	
 	
 
-	groups <- data[data$V3=="HPA",1]
+	groups <- data[data[,3]=="HPA",1]
 
 	ntt <- length(levels(groups))
-	dataMSP <- data[data$V3=="MSP",4:length(data[1,])]
-	dataHPA <- data[data$V3=="HPA",4:length(data[1,])]
+	dataMSP <- data[data[,3]=="MSP",4:length(data[1,])]
+	dataHPA <- data[data[,3]=="HPA",4:length(data[1,])]
 
 	dataMIX <- dataHPA*10+dataMSP
 	Met <- apply(dataMIX, 2, methStatusEval, type=uninformative)
@@ -41,7 +44,7 @@ msap <- function(datafile, name=datafile, uninformative=TRUE, nDec=4){
 	cat("Number of Methylation-Susceptible Loci (MSL): ",length(Met[MSL]),"\n")
 	cat("Number of No Methylated Loci (NML): ",length(Met[NML]),"\n\n")
 	
-	repMet(dataMIX[,MSL], groups, nDec)
+	
 	
 	if (uninformative){
 	#This transformation assumes that HPA-/MSP- pattern is uninformative as it could represent full methylation of cytosines in the target or that target is missing by mutation. 
@@ -75,7 +78,7 @@ msap <- function(datafile, name=datafile, uninformative=TRUE, nDec=4){
 	wt<-wilcox.test(MSL.I,NML.I)
 	pval<-ifelse(wt$p.value<0.0001, "P < 0.0001", paste("P = ",wt$p.value))
 	cat(wt$method,": ", names(wt$statistic)," = ",wt$statistic[[1]]," (",pval,")\n")
-	png(filename=paste(name,".Shannon.png"), width=680, height=680)
+	png(filename=paste(name,"Shannon.png", sep='-'), width=680, height=680)
 	boxplot(MSL.I, NML.I, names=c("MSL","NSL"), ylab="Shannon's I")
 	
 	dev.off()
@@ -83,7 +86,10 @@ msap <- function(datafile, name=datafile, uninformative=TRUE, nDec=4){
 	
 	### MSL 
 	cat("\nAnalysis of MSL\n")
-	DM<-smc(matM, dist=TRUE) #Simple Matching Coeefiecient
+	repMet(dataMIX[,MSL], groups, nDec)
+	
+	
+	DM<-smc(matM, dist=TRUE) #Simple Matching Coefficient
 	DM <- as.dist(DM)
 	DM <- lingoes(DM)
 
@@ -99,7 +105,7 @@ msap <- function(datafile, name=datafile, uninformative=TRUE, nDec=4){
 	minX <- min(pcol$li$A1)
 	maxY <- max(pcol$li$A2)
 	minY <- min(pcol$li$A2)
-	png(filename=paste(name,".MSL.png"), width=680, height=680)
+	png(filename=paste(name,"MSL.png",sep='-'), width=680, height=680)
 	par(bty = 'n')
 	plot(0,0, main=paste(name," (MSL)"), type = "n",xlab=paste("C1 (",var1,"%)"),ylab=paste("C2 (",var2,"%)"), xlim=c(minX,maxX+0.1), ylim=c(minY,maxY+0.1), frame=TRUE, cex=1.5)
 	bgcolors<-c("black", "green", "yellow", "red", "blue", "orange", "pink")
@@ -164,7 +170,7 @@ msap <- function(datafile, name=datafile, uninformative=TRUE, nDec=4){
 	minX <- min(pcol$li$A1)
 	maxY <- max(pcol$li$A2)
 	minY <- min(pcol$li$A2)
-	png(filename=paste(name,".nML.png"), width=680, height=680)
+	png(filename=paste(name,"nML.png",sep='-'), width=680, height=680)
 	par(bty = 'n')
 	plot(0,0, main=paste(name," (NML)"), type = "n",xlab=paste("C1 (",var1,"%)"),ylab=paste("C2 (",var2,"%)"), xlim=c(minX,maxX+0.1), ylim=c(minY,maxY+0.1), frame=TRUE, cex=1.5)
 	bgcolors<-c("black", "green", "yellow", "red", "blue", "orange", "pink")

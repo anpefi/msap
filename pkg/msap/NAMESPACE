@@ -1,0 +1,5 @@
+importFrom("ade4",lingoes,dudi.pco,s.class)
+importFrom("scrime",smc)
+importFrom("pegas",amova)
+import(cba)
+export(msap,shannon)

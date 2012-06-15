@@ -1,9 +1,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
-    <link href="style.css" type="text/css" rel="stylesheet" />
-    <title>SlickGreen | florida web design</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <title>msap: An R package for analyse epigenetic and genetic diversity and
+      differentiation in MSAP assays</title>
   </head>
   <body>
     <div id="container">
@@ -49,8 +50,7 @@
       <div id="content">
         <div id="content_top"></div>
         <div id="content_main">
-          <h2 align="center"><tt>                    <img src="images/msap.logo.png"
-                alt="msap" /></tt><br />
+          <h2 align="center"><tt>                    <img alt="msap" src="images/msap.logo.png" /></tt><br />
           </h2>
           <h2><br />
           </h2>
@@ -63,8 +63,8 @@
           <p>WEBSITE UNDER CONSTRUCTION</p>
           <p><br />
           </p>
-          <p><b>IMPORTANT NOTICE: msap is in a very early development stage. Use
-              it under your own responsability. </b><br />
+          <p><b>IMPORTANT NOTICE: <i>msap</i> is in a very early stage of
+              development. Use it under your own responsability. </b><br />
           </p>
           <h2></h2>
           <p> </p>
@@ -74,18 +74,18 @@
           </p>
           <p> The program provides a deep analysis of epigenetic variation
             starting from a binary data matrix indicating the presence or
-            absence of EcoRI-HpaII and EcoRI-MspI fragments, typical of MSAP
-            technique. After compare the data from both ezyme combinations, the
-            program determines if each fragment is susceptible of methylation
-            (representative of epigenetic variation) or if there is no evidence
-            of methylation (representative of genetic variation). Different
-            analyses of the variation (genetic and epigenetic) among
-            user-defined groups of samples are then performed, as well as the
-            classification of the methylation ocurrences in those groups.
-            Statistical testing provide support to the analyses. A comprehensive
-            report of the analyses and several useful plots could help
-            researchers to asses the epigenetic variation in their experiments
-            using MSAP.<br />
+            absence of <i>Eco</i>RI-<i>Hpa</i>II and <i>Eco</i>RI-<i>Msp</i>I
+            fragments, typical of MSAP technique. After compare the data from
+            both ezyme combinations, the program determines if each fragment is
+            susceptible of methylation (representative of epigenetic variation)
+            or if there is no evidence of methylation (representative of genetic
+            variation). Different analyses of the variation (genetic and
+            epigenetic) among user-defined groups of samples are then performed,
+            as well as the classification of the methylation ocurrences in those
+            groups. Statistical testing provide support to the analyses. A
+            comprehensive report of the analyses and several useful plots could
+            help researchers to asses the epigenetic variation in their
+            experiments using MSAP.<br />
             <br />
             The package is intended to be easy to use even for those people
             non-familiar to the R environment. Advanced users could take
@@ -98,18 +98,35 @@
           </h3>
           <p><br />
           </p>
-          <p>To download and install automatically the package, execute the
-            following command within a session in R:</p>
+          <p>You can install <i>msap</i> automatically from within a R session:<br />
+          </p>
+          <ul>
+            <li>To install the last stable version from CRAN (NOTE: Not
+              available yet):</li>
+          </ul>
+          <p><br />
+          </p>
+          <p><b style="color: rgb(68, 68, 68); font-family: verdana, sans-serif; font-size: 14px; font-style: normal; font-variant: normal; letter-spacing: normal; line-height: 16px; orphans: 2; text-align: left; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); "><strong
+                style="font-style: inherit; font-weight: bold; "><code style="margin: 0px; padding: 0px; font-style: inherit; font-weight: inherit; font-family: monospace; line-height: 11px; ">   
+                  install.packages("msap")</code></strong></b></p>
+          <p></p>
+          <p><br />
+          </p>
+          <ul>
+            <li>To download and install automatically the package, execute the
+              following command within a session in R:</li>
+          </ul>
           <p><br />
           </p>
           <p>
-            <meta content="text/html; charset=utf-8" http-equiv="content-type" />
+            <meta http-equiv="content-type" content="text/html; charset=utf-8" />
             <b style="color: rgb(68, 68, 68); font-family: verdana, sans-serif; font-size: 14px; font-style: normal; font-variant: normal; letter-spacing: normal; line-height: 16px; orphans: 2; text-align: left; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); "><strong
-                style="font-style: inherit; font-weight: bold; "><code style="margin: 0px; padding: 0px; font-style: inherit; font-weight: inherit; font-family: monospace; line-height: 11px; ">install.packages("msap",
-                  repos="http://R-Forge.R-project.org")</code></strong></b></p>
+                style="font-style: inherit; font-weight: bold; "><code style="margin: 0px; padding: 0px; font-style: inherit; font-weight: inherit; font-family: monospace; line-height: 11px; ">   
+                  install.packages("msap", repos="http://R-Forge.R-project.org")</code></strong></b></p>
           <p><br />
           </p>
-          <p>Alternatively, you can download the package (BETA!) <a href="https://r-forge.r-project.org/R/?group_id=1422">here</a>.<br />
+          <p>Alternatively, you can download the package for local installation
+            <a href="https://r-forge.r-project.org/R/?group_id=1422">here</a>.<br />
           </p>
           <p> </p>
           <p><br />
@@ -131,7 +148,7 @@
           <p><br />
           </p>
           Andrés Pérez-Figueroa<br />
-          <meta content="text/html; charset=utf-8" http-equiv="content-type" />
+          <meta http-equiv="content-type" content="text/html; charset=utf-8" />
           Dep. Bioquímica, Xenética e Inmunoloxía.<br />
           Facultade de Bioloxía. Universidade de Vigo.<br />
           36310 Vigo. Spain.<br />
@@ -141,8 +158,8 @@
           Tfn/fax: (34) 986 813828<br />
           <br />
           <br />
-                                                                 <img src="images/logo_uvigo.jpg"
-            alt="uvigo" /><br />
+                                                                 <img alt="uvigo"
+            src="images/logo_uvigo.jpg" /><br />
           <br />
         </div>
         <div id="content_bottom"></div>
