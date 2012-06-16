@@ -8,7 +8,7 @@ Diversity analysis of MSAP data
 It performs all the analysis of MSAP data in order to asses both epigenetic and genetic diversity.   
 }
 \usage{
-msap(datafile, name=datafile, uninformative=TRUE, nDec=4)
+msap(datafile, name=datafile, uninformative=TRUE, nDec=4, meth=TRUE)
 }
 
 \arguments{
@@ -24,6 +24,9 @@ msap(datafile, name=datafile, uninformative=TRUE, nDec=4)
   
   \item{nDec}{
   number of digits of precision for floating point output.
+}
+\item{meth}{
+  Logical value switching between MSAP ('TRUE') and standard AFLP ('FALSE') analysis. The difference lies in that for AFLP (meth=FALSE) the 'enzyme' column is ignored and every row in data represent an independent sample, without combination of data. 
 }
 
 }
