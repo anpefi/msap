@@ -5,33 +5,22 @@
 
 
 
-msap <- function(datafile, name=datafile, uninformative=TRUE, nDec=4, meth=TRUE){
-	#loading required packages
-	#suppressPackageStartupMessages(require(ade4, warn.conflicts=FALSE))
-	#suppressPackageStartupMessages(require(scrime, warn.conflicts=FALSE))
-	#suppressPackageStartupMessages(require(pegas, warn.conflicts=FALSE))
-	#suppressPackageStartupMessages(require(cba, warn.conflicts=FALSE))
+msap <- function(datafile, name=datafile, uninformative=TRUE, nDec=4, meth=TRUE, rm.redundant=TRUE, rm.monomorphic=TRUE, do.pcoa=TRUE, do.shannon=TRUE, do.AMOVA=TRUE, do.pairwisePhiST=TRUE){
 	
 	cat("\nmsap - Statistical analysis for Methilation-Sensitive Amplification Polimorphism data\n")
 
 	#Read datafile
 	cat("\nReading ", datafile,"\n")
 	data <- read.csv(datafile, header=TRUE)
-	#data file should have these columns:
-	# 1. Label for factor levels (one-factor only)
-	# 2. Arbitrary label
-	# 3. Enzyme labels: HPA or MSP
-	# 4+. band presence/absence: 1/0
 	
 	#get the loci names
 	locus <- rownames(data)[4:length(data[1,])]
 	cat("Number of loci: ",length(locus),"\n")
-	#Set the first columns
 	#sorting
 	data <- data[with(data, order(data[,1],data[,2],data[,3])),]
 	
 	
-	if(meth){
+	if(meth){ #meth=TRUE -> MSAP
 		groups <- data[data[,3]=="HPA",1]
 		ntt <- length(levels(groups))
 		cat("Number of samples/individuals: ",length(data[,1])/2,"\n")
@@ -42,9 +31,11 @@ msap <- function(datafile, name=datafile, uninformative=TRUE, nDec=4, meth=TRUE)
 		Met <- apply(dataMIX, 2, methStatusEval, type=uninformative)
 		MSL <- which(Met)
 		NML <- which(!Met)
-		cat("Number of Methylation-Susceptible Loci (MSL): ",length(Met[MSL]),"\n")
-		cat("Number of No Methylated Loci (NML): ",length(Met[NML]),"\n\n")
-
+		MSL.nloci <- length(Met[MSL])
+		NML.nloci <- length(Met[NML])
+		cat("Number of Methylation-Susceptible Loci (MSL): ",MSL.nloci,"\n")
+		cat("Number of No Methylated Loci (NML): ",NML.nloci,"\n\n")
+		
 		if (uninformative){
 		#This transformation assumes that HPA-/MSP- pattern is uninformative as it could represent full methylation of cytosines in the target or that target is missing by mutation. 
 		#Herrera & Bazaga 2010
@@ -66,8 +57,21 @@ msap <- function(datafile, name=datafile, uninformative=TRUE, nDec=4, meth=TRUE)
 			#Lu et al. 2008; Gupta et al. 2012
 
 			dataMIXb <- ifelse(dataMIX==11, 2, 1)
-			matM <- as.matrix(dataMIXb)
+			matM <- as.matrix(dataMIXb[,MSL])
+			matN <- as.matrix(dataMIXb[,NML])
 		}
+		
+		if(rm.monomorphic){
+			Poly <- apply(matM, 2, polymorphic)
+			matM <- matM[,Poly]
+			Poly <- apply(matN, 2, polymorphic)
+			matN <- matN[,Poly]
+			MSL.ploci <- length(matM[1,])
+			NML.ploci <- length(matN[1,])
+			cat("Number of polymorphic MSL: ",MSL.ploci," (",format(MSL.ploci/MSL.nloci*100,digits=1),"% of total MSL)\n")
+			cat("Number of polymorphic NML: ",NML.ploci," (",format(NML.ploci/NML.nloci*100,digits=1),"% of total NML)\n\n")
+		}
+		
 		MSL.I <- apply(matM, 2, shannon)
 		NML.I <- apply(matN, 2, shannon)
 		cat("\nShannon's Diversity Index \n")
@@ -100,7 +104,7 @@ msap <- function(datafile, name=datafile, uninformative=TRUE, nDec=4, meth=TRUE)
 		diffAmova(DM, groups, nDec)
 	
 	} #end if meth
-	else{
+	else{  #meth=FALSE -> AFLP
 		groups <- data[,1] #Here, all rows are indepedent samples
 		ntt <- length(levels(groups))
 		matN <- as.matrix(data[,4:length(data[1,])])
