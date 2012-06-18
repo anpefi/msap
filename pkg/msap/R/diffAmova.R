@@ -2,7 +2,7 @@
 #package: msap
 #Author: Andrés Pérez-Figueroa (anpefi@uvigo.es)
 
-#This function should reduce redundant markers, i.e. markers that shown the same score across samples
+#Uses pegas' AMOVA and report differentiation
 
 diffAmova <- function(DM, groups, nDec){
 	
