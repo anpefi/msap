@@ -8,7 +8,7 @@
 	Checks if a list of binary aleles is polymorphic (with at least two ocurrences of both states)
 }
 \usage{
-polymorphic <- function(col)
+polymorphic(col)
 
 }
 \arguments{
