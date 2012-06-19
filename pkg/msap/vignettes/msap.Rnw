@@ -1,9 +1,10 @@
 \documentclass{article}
 
 \usepackage{natbib}
-\usepackage{graphics}
+\usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{indentfirst}
+\usepackage{url}
 \usepackage[utf8]{inputenc}
 
 \DeclareMathOperator{\var}{var}
@@ -23,11 +24,19 @@ foo <- packageDescription("msap")
 \maketitle
 
 \section{Introduction}
-\emph{msap} provides a deep analysis of epigenetic variation starting from a binary data matrix indicating the presence or absence of EcoRI-HpaII and EcoRI-MspI fragments, typical of MSAP technique. After compare the data from both ezyme combinations, the program determines if each fragment is susceptible of methylation (representative of epigenetic variation) or if there is no evidence of methylation (representative of genetic variation). Different analyses of the variation and differentiation (genetic and epigenetic) among user-defined groups of samples are then performed, as well as the classification of the methylation ocurrences in those groups. A comprehensive report of the analyses and several useful plots could help researchers to asses the epigenetic variation in their experiments using MSAP. Standard AFLP data is also suitable to be analysed.
+\emph{msap} provides a deep analysis of epigenetic variation starting from a binary data matrix indicating the presence or absence of EcoRI-HpaII and EcoRI-MspI fragments, typical of MSAP technique. After compare the data from both enzyme combinations, the program determines if each fragment is susceptible of methylation (representative of epigenetic variation) or if there is no evidence of methylation (representative of genetic variation). Different analyses of the variation and differentiation (genetic and epigenetic) among user-defined groups of samples are then performed, as well as the classification of the methylation occurrences in those groups. A comprehensive report of the analyses and several useful plots could help researchers to asses the epigenetic variation in their experiments using MSAP. Standard AFLP data is also suitable to be analyzed. All analyses follow a band-based strategy (Bonin \emph{et al.}, 2007)
 
-All analyses follow a band-based strategy (Bonin \emph{et al.}, 2007)
+The package is intended to be easy to use even for those people non-familiar to the R environment. Advanced users could take advantage of available source code to adapt \emph{msap} for more complex analyses.
 
-The package is intended to be easy to use even for those people non-familiar to the R environment. Advanced users could take advantange of available source code to adapt msap for more complex analyses.
+\section{R basics. All you need to know about R to run \emph{msap}}
+
+The only knowledge required for installing and running \emph{msap} is about how to open an R session in your computer. R is a statistical programming language that provides many built in functions for performing statistical analysis and is also fexible to allow users to write their own functions.
+
+R can be downloaded and installed for free from the website http://cran.r-project.org where detailed instructions for installing R on any operating system are provided. Accessing R is different for every operating system. For windows users, simply double click the R icon that is created after installation. For Mac users, you can double click the R icon under your Applications menu. On Linux, in the terminal window simply type R at the command prompt and R will be opened within the terminal window.
+
+When you open R, no matter the operating system you are using, you will see the command prompt
+symbol \verb@>@ which simply means that R is waiting for you to give it a command. To quit R, simply type \verb@q()@ in the command prompt and R will ask you if you want to save the workspace before quitting.
+And that's all.
 
 \section{Installing \emph{msap}}
 You can install \emph{msap} automatically from a R session.
@@ -44,19 +53,20 @@ The above instructions should install \emph{msap} and all required dependecies.
 
 
 \section{Preparation of data}
-In order to use \emph{msap} to analyse your results from a MSAP experiment, you need to provide a data file with a binary matrix (1/0) indicating the presence or absence of EcoRI-HpaII and EcoRI-MspI fragments in a bunch of samples of two or more populations/groups.
+In order to use \emph{msap} for analyzing your results from a MSAP experiment, you need to provide a data file with a binary matrix (1/0) indicating the presence or absence of EcoRI-HpaII and EcoRI-MspI fragments in a bunch of samples of two or more populations/groups.
 Data file should be a .csv file with markers as columns and two rows by sample, one for each isoschizomer reaction. File could be edited in the a spreadsheet of your choice (see Figure~\ref{fig:data}) and then saved as csv (with ',' as field separator). The final text file should look like Figure~\ref{fig:csv} if opened in a text editor.
-The first row should include the markers name/references. The first column should provide the label for the group where the sample is included, with the aim to make comparisons between different gruops. Second column is reserved for an arbitrary label (i.e. to name the sample). Third column should identify the isoschizomer with 'HPA' or 'MSP'.
-If you want to analyse a standard AFLP dataset the datafile format is the same, but the program will ignore content of third column.
 
-\begin{figure}[t]
+The first row should include the markers name/references. The first column should provide the label for the group where the sample is included, with the aim to make comparisons between different groups. Second column is reserved for an arbitrary label (i.e. to name the sample). Third column should identify the isoschizomer with 'HPA' or 'MSP'.
+If you want to analyze a standard AFLP dataset the datafile format is the same, but the program will ignore content of third column and treat all rows as independent samples.
+
+\begin{figure}
 \centering
 \includegraphics[width=1\textwidth]{datafile.png}
 \caption{Data format as seen in a spreadsheet for edition}
 \label{fig:data}
 \end{figure}
 
-\begin{figure}[t]
+\begin{figure}
 \centering
 \includegraphics[width=1\textwidth]{csvfile.png}
 \caption{Final data format in the .csv file}
@@ -64,7 +74,6 @@ If you want to analyse a standard AFLP dataset the datafile format is the same, 
 \end{figure}
 
 \section{Running \emph{msap}}
-
 We start by loading the msap package into an R session.
 <<loading>>=
 library(msap)
@@ -72,66 +81,99 @@ library(msap)
 
 It is highly recommended to change the working directory to that where datafile is located. Windows users can use the menu item 'File>Change dir' and choose the appropiate folder. To change the working directory within an R console run the command \verb@setwd(dir)@ where \emph{dir} is the absolute path to the directory. The output files created by \emph{msap} will be save in that working directory.
 
-Once we are in the rigth working directory with an appropiate data file, we can run all analyses of \emph{msap} with a single command:
+Once we are in the rigth working directory with an appropiate data file, we can run all analyses of \emph{msap} with a single command (change "example.csv" by the name of your datafile, keeping the quotes, and change "Example" by custom name to identify your data):
 
 <<runFull>>=
 msap("example.csv",name="Example")
 @
 
-Aditionally to the on-screen report, the following figures are produced and stored in .png files:
+In addition to the above text report, \emph{msap} produces some exploratory figures that are directly saved into .png files:
+
 \begin{itemize}
-	\item A boxplot with the distribution of Shannon's diversity indices in both MSL and NML (Figure~\ref{fig:shannon})
-	\item A plot with the representation of Principal Coordinate Analysis (PCoA) for epigenetic (MSL) differentiation between groups. (Figure~\ref{fig:msl})
-	\item A plot with the representation of Principal Coordinate Analysis (PCoA) for genetic (NML) differentiation between groups. (Figure~\ref{fig:nml})
+\item A plot of Principal Coordinate Analysis (PCoA), see Figure~\ref{fig:msl}, showing the first two axis. They are saved as '\emph{<name>}-MSL.png' and '\emph{<name>}-NML.png' for MSL and NML respectively, where \emph{<name>} represents the name passed as argument in the calling to msap function.
+
+\item A neighbor-joining tree of all samples (see Figure~\ref{fig:tree}) saved as '\emph{<name>}-MSL-NJ.png' and '\emph{<name>}-NML-NJ.png' for MSL and NML respectively
+
 \end{itemize}
 
-\begin{figure}[t]
-\centering
-\includegraphics[width=0.7\textwidth]{Example-Shannon.png}
-\caption{Boxplot comparing Shannon's Diversity Index in MSL and NML }
-\label{fig:shannon}
-\end{figure}
 
-\begin{figure}[t]
+\begin{figure}
 \centering
 \includegraphics[width=0.7\textwidth]{Example-MSL.png}
-\caption{Representation of Principal Coordinate Analysis (PCoA) for epigenetic (MSL) differentiation between groups. The first two coordinates (C1 and C2) are shown with the percentage of variance explained by them. Diferente point types represent individuals from different groups. Group labels show the centroid for the points cloud in each group. Ellipses represent the average dispersion of those poins aroun their centre. The long axis of the ellipse shows the direction of maximum dispersion and the short axis, the direction of minimum dispersion}
+\caption{Representation of Principal Coordinate Analysis (PCoA) for epigenetic (MSL) differentiation between groups. The first two coordinates (C1 and C2) are shown with the percentage of variance explained by them. Diferente point types represent individuals from different groups. Group labels show the centroid for the points cloud in each group. Ellipses represent the average dispersion of those poins aroun their centre. The long axis of the ellipse shows the direction of maximum dispersion and the short axis, the direction of minimum dispersion.}
 \label{fig:msl}
 \end{figure}
 
-\begin{figure}[t]
+\begin{figure}
 \centering
-\includegraphics[width=0.7\textwidth]{Example-nML.png}
-\caption{Representation of Principal Coordinate Analysis (PCoA) for genetic (NML) differentiation between groups.}
-\label{fig:nml}
+\includegraphics[width=0.7\textwidth]{Example-MSL-NJ.png}
+\caption{Neighbor-Joining tree of all samples (numbered labels at the tips) for epigenetic (MSL) distances. Colors represent different groups/populations.}
+\label{fig:tree}
 \end{figure}
 
 \subsection{Further options}
-In the previous section, the basic use of msap was described. However, it is possible to set some different options in the program if passed as arguments to the msap() function. 
+In the previous section, the basic use of \emph{msap} was described. However, it is possible to set some different options in the program if passed as arguments to the msap() function. 
 
 Here is the full usage of msap() function including all the arguments and their default values (if applicable). Except for the 'datafile' that is required, all other arguments are optional.
 \begin{verbatim}
-msap(datafile, name=datafile, uninformative=TRUE, nDec=4, meth=TRUE)
+msap(datafile, name=datafile, uninformative=TRUE, 
+nDec=4, meth=TRUE, rm.redundant=TRUE,
+rm.monomorphic=TRUE, do.pcoa=TRUE, do.shannon=TRUE, 
+do.amova=TRUE, do.pairwisePhiST=TRUE, do.cluster=TRUE, 
+use.groups=NULL)
 \end{verbatim}
 
 \begin{description}
-  \item[datafile]{
-  String containing the url of the csv file with the data. Required.
-}
-  \item[name]{
-  a name for the dataset to be included in the output files. By default, the name of the given datafile is used.  
-}
-  \item[uninformative]{
-  A logical value determining how to deal with HPA-/MSP- pattern. 'FALSE' assumes that HPA-/MSP- (no band for both isoschizomers) pattern represents full methylation of cytosines in the target, while 'TRUE' (default value) consider that pattern as uninformative as could be caused by a missing target (mutation). See 'Details' below
-}
+
+  	\item[datafile]{
+  		String containing the url of the csv file with the data. Required.
+	}
+  	\item[name]{
+  		a name for the dataset to be included in the output files. By default, the name of the given datafile is used.  
+	}
+  	\item[uninformative]{
+  		A logical value determining how to deal with HPA-/MSP- pattern. 'FALSE' assumes that HPA-/MSP- (no band for both isoschizomers) pattern represents full methylation of cytosines in the target, while 'TRUE' (default value) consider that pattern as uninformative as could be caused by a missing target (mutation). See 'Details' below.
+	}
   
-  \item[nDec]{
-  number of digits of precision for floating point output.
-}
-\item[meth]{
-  Logical value switching between MSAP ('TRUE') and standard AFLP ('FALSE') analysis. The difference lies in that for AFLP (meth=FALSE) the 'enzyme' column is ignored and every row in data represent an independent sample, without combination of data..
-}
+  	\item[nDec]{
+  		number of digits of precision for floating point output.
+	}
+	\item[meth]{
+  	Logical value switching between MSAP ('TRUE') and standard AFLP ('FALSE') analysis. The difference lies in that for AFLP (meth=FALSE) the 'enzyme' column is ignored and every row in data represent an independent sample, without combination of data. 
+	}
+	\item[rm.redundant]{
+		Not implemented yet.
+	}
+	\item[rm.monomorphic]{
+		Logical value switching between the removal ('TRUE', by default) of monomorphic fragments (defined as those with only one state or just one ocurrence of the second state across the whole dataset) after data transformation.
+	}
+	\item[do.pcoa]{
+		Option switcher for doing a Principal Coordinate Analysis for variation between groups. TRUE by default.
+	}
+	\item[do.shannon]{
+		Option switcher for Shannon's Diversity Index comparison between MSL and NML.
+	}
+	\item[do.amova]{
+		Option switcher for doing an AMOVA for differentiation between groups. TRUE by default.
+	}
+	\item[do.pairwisePhiST]{
+		Logical value switching between the calculation of the pairwise $\Phi_{st}$ between pairs of groups/populations ('TRUE' by default) or skip it ('FALSE').
+	}
+	\item[do.cluster]{
+		Calculates and plots a Neighbour-Joining tree ('TRUE' by default) or skip it ('FALSE').
+	}
+	\item[use.groups]{
+		Gives the groups/populations/treatments of the datafile to be analysed. By default all groups are considered into de the analysis. To provide a subset of the groups a vector should be passed with the names of groups to be included. For example, in a datafile with 5 groups (Control, pop1, pop2, pop3 and pop4) we are interested only in Control and pops 1 and 3. Then, msap should be called with 'use.groups=c('Control','pop1','pop3')'.
+	}
 \end{description}
+
+\subsection{What if I need another kind of analysis for my MSAP data?}
+The analyses currently provided by \emph{msap} are limited but that does not mean that further analysis could be added in the future. I try to keep the package updated to allow exploratory assays of epigenetic diversity and differentiation, focused on the field of evolutionary ecology. If you are trying to analyse your MSAP data and options in \emph{msap} do not fit your requeriments, then you have three alternatives to get your tasks done by \emph{msap}:
+\begin{itemize}
+\item If you have programming skills or experience with R, then you can get the source code of \emph{msap} and adapt it to your needs. That is the main advantage of open source software!
+\item If you have programming skills or experience with R, and want to collaborate with me to expand \emph{msap}, then do not hesitate to contact me for joing to the development team.
+\item If you are not familiar with R or do not feel confident to make code yourself, then use the support tracker to request new features in \emph{msap}.
+\end{itemize}
 
 \section{Session Info}
 This document was created using the following:
@@ -140,11 +182,5 @@ This document was created using the following:
 sessionInfo()
 @
 
-
-\begin{thebibliography}{}
-
-
-
-\end{thebibliography}
 
 \end{document}

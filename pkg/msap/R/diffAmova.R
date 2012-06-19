@@ -4,7 +4,7 @@
 
 #Uses pegas' AMOVA and report differentiation
 
-diffAmova <- function(DM, groups, nDec){
+diffAmova <- function(DM, groups, nDec, pairwise){
 	
 	ntt <- length(levels(groups))
 
@@ -22,22 +22,25 @@ diffAmova <- function(DM, groups, nDec){
 	pval<- amv$varcomp[1,2]
 	pval<- ifelse(pval<0.0001, "(P<0.0001)", paste("(P=",format(pval,digits=nDec),")"))
 	cat("Phi_ST = ", format(phiST, digits=nDec), " ", pval,"\n")
+	
+	if(ntt<3) pairwise=FALSE
+	if(pairwise){
+		cat("\nPairwise Phi_ST\n------------------------------------\n")
 
-	cat("\nPairwise Phi_ST\n------------------------------------\n")
-
-	for (i in 1:(ntt-1) ){
-		for(j in seq(i+1,ntt ) ) {
-			p1 <- which(groups==levels(groups)[i])
-			p2 <- which(groups==levels(groups)[j])
-			assign("ttos", groups[c(p1,p2)], envir=globalenv())
-			assign("M", subset(DM,c(p1,p2)), envir=globalenv())
-			a <- amova(M ~ ttos, nperm=10000)
-			pval<-as.numeric(a$varcomp$P.value[1])
-
-			pval<-ifelse(pval<0.0001, "(P<0.0001)", paste("(P=",format(pval, digits=nDec),")"))
-			phiST <- as.numeric(a$varcomp[1,1]/(a$varcomp[1,1]+a$varcomp[2,1]))
-			
-			cat(levels(groups)[i], " - ",levels(groups)[j],": ",format(phiST,trim=T,digits=nDec),"\t ",pval," \n")
+		for (i in 1:(ntt-1) ){
+			for(j in seq(i+1,ntt ) ) {
+				p1 <- which(groups==levels(groups)[i])
+				p2 <- which(groups==levels(groups)[j])
+				assign("ttos", groups[c(p1,p2)], envir=globalenv())
+				assign("M", subset(DM,c(p1,p2)), envir=globalenv())
+				a <- amova(M ~ ttos, nperm=10000)
+				pval<-as.numeric(a$varcomp$P.value[1])
+	
+				pval<-ifelse(pval<0.0001, "(P<0.0001)", paste("(P=",format(pval, digits=nDec),")"))
+				phiST <- as.numeric(a$varcomp[1,1]/(a$varcomp[1,1]+a$varcomp[2,1]))
+				
+				cat(levels(groups)[i], " - ",levels(groups)[j],": ",format(phiST,trim=T,digits=nDec),"\t ",pval," \n")
+			}
 		}
-	}
+	}#end if pairwise
 }
