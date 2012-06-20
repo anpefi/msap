@@ -130,11 +130,12 @@ msap <- function(datafile, name=datafile, uninformative=TRUE, nDec=4, meth=TRUE,
 		#assign("pops", groups, envir=globalenv())
 		#PCoA
 		if(do.pcoa)pcoa(DM, groups, name, "MSL")
-
+		assign("DM.MSL", DM, envir=globalenv())
+		assign("pops", groups, envir=globalenv())
 		if(do.amova){
 			#AMOVA
 			cat("\nPerforming AMOVA\n")
-			diffAmova(DM, groups, nDec, do.pairwisePhiST)
+			diffAmova(DM, groups, nDec, do.pairwisePhiST, tag="MSL")
 		}
 	
 	} #end if meth
@@ -167,7 +168,7 @@ msap <- function(datafile, name=datafile, uninformative=TRUE, nDec=4, meth=TRUE,
 		}
 		#PCoA
 		if(do.pcoa) pcoa(DM, groups, name, "NML")
-
+		assign("DM.MNL", DM, envir=globalenv())
 		if(do.amova){
 			#AMOVA
 			cat("\nPerforming AMOVA\n")
