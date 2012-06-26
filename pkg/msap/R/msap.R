@@ -135,7 +135,7 @@ msap <- function(datafile, name=datafile, uninformative=TRUE, nDec=4, meth=TRUE,
 		if(do.amova){
 			#AMOVA
 			cat("\nPerforming AMOVA\n")
-			diffAmova(DM, groups, nDec, do.pairwisePhiST, tag="MSL")
+			diffAmova(DM, groups, nDec, do.pairwisePhiST)
 		}
 	
 	} #end if meth
