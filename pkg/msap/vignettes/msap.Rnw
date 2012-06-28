@@ -24,7 +24,7 @@ foo <- packageDescription("msap")
 \maketitle
 
 \section{Introduction}
-\emph{msap} provides a deep analysis of epigenetic variation starting from a binary data matrix indicating the presence or absence of EcoRI-HpaII and EcoRI-MspI fragments, typical of MSAP technique. After compare the data from both enzyme combinations, the program determines if each fragment is susceptible of methylation (representative of epigenetic variation) or if there is no evidence of methylation (representative of genetic variation). Different analyses of the variation and differentiation (genetic and epigenetic) among user-defined groups of samples are then performed, as well as the classification of the methylation occurrences in those groups. A comprehensive report of the analyses and several useful plots could help researchers to asses the epigenetic variation in their experiments using MSAP. Standard AFLP data is also suitable to be analyzed. All analyses follow a band-based strategy (Bonin \emph{et al.}, 2007)
+\emph{msap} provides a deep analysis of epigenetic variation starting from a binary data matrix indicating the presence or absence of EcoRI-HpaII and EcoRI-MspI fragments, typical of MSAP technique. After compare the data from both enzyme combinations, the program determines if each fragment is susceptible of methylation (representative of epigenetic variation) or if there is no evidence of methylation (representative of genetic variation). Different analyses of the variation and differentiation (genetic and epigenetic) among user-defined groups of samples are then performed, as well as the classification of the methylation occurrences in those groups. A comprehensive report of the analyses and several useful plots could help researchers to asses the epigenetic variation in their experiments using MSAP. Standard AFLP data is also suitable to be analyzed. All analyses follow a band-based strategy (\citealp{Bonin07}). There are several examples in the literature of MSAP experiments using some of the analyses provided by \emph{msap} (see \citealp{Herrera10, Moran11, Chwedorzewska12, Gupta12, Rodriguez12}) so the package could be useful in those kind of approaches.
 
 The package is intended to be easy to use even for those people non-familiar to the R environment. Advanced users could take advantage of available source code to adapt \emph{msap} for more complex analyses.
 
@@ -40,7 +40,7 @@ And that's all.
 
 \section{Installing \emph{msap}}
 You can install \emph{msap} automatically from a R session.
-To install the last stable version from CRAN (Not available yet):
+To install the last stable version from CRAN:
 \begin{verbatim}
 > install.packages("msap")
 \end{verbatim}
@@ -75,7 +75,7 @@ If you want to analyze a standard AFLP dataset the datafile format is the same, 
 
 \section{Running \emph{msap}}
 We start by loading the msap package into an R session.
-<<loading>>=
+<<>>=
 library(msap)
 @
 
@@ -83,7 +83,14 @@ It is highly recommended to change the working directory to that where datafile 
 
 Once we are in the rigth working directory with an appropiate data file, we can run all analyses of \emph{msap} with a single command (change "example.csv" by the name of your datafile, keeping the quotes, and change "Example" by custom name to identify your data):
 
-<<runFull>>=
+\begin{verbatim}
+> msap("example.csv", name="Example")
+\end{verbatim}
+
+On execution, \emph{msap} will run all analyses and will show an on screen text report with the results:
+
+
+<<echo=FALSE>>=
 msap("example.csv",name="Example")
 @
 
@@ -174,6 +181,26 @@ The analyses currently provided by \emph{msap} are limited but that does not mea
 \item If you have programming skills or experience with R, and want to collaborate with me to expand \emph{msap}, then do not hesitate to contact me for joing to the development team.
 \item If you are not familiar with R or do not feel confident to make code yourself, then use the support tracker to request new features in \emph{msap}.
 \end{itemize}
+
+
+\begin{thebibliography}{9}
+
+\bibitem[Bonin et al.(2007)]{Bonin07} Bonin, A., Ehrich, D., and Manel, S. (2007). Statistical analysis of amplified fragment length polymorphism data: a toolbox for molecular ecologists and evolutionists. \emph{Molecular ecology}, 16(18), 3737-58. 
+
+\bibitem[Chwedorzewska and Bednarek(2012)]{Chwedorzewska12} Chwedorzewska, K. J., and Bednarek, P. T. (2012). Genetic and epigenetic variation in a cosmopolitan grass Poa annua from Antarctic and Polish populations. \emph{Polish Polar Research}, 33(1), 63-80. 
+
+\bibitem[Gupta et al.(2012)]{Gupta12} 
+Gupta, V., Bijo, J., Kumar, M., Reddy, C. R. K., and Jha, B. (2012). Detection of Epigenetic Variations in the Protoplast-Derived Germlings of Ulva reticulata Using Methylation Sensitive Amplification Polymorphism (MSAP). \emph{Marine biotechnology} DOI: 10.1007/s10126-012-9434-7
+
+\bibitem[Herrera and Bazaga(2010)]{Herrera10} 
+Herrera, C. M., and Bazaga, P. (2010). Epigenetic differentiation and relationship to adaptive genetic divergence in discrete populations of the violet Viola cazorlensis. \emph{The New phytologist}, 187(3), 867-76. 
+
+\bibitem[Moran and Perez-Figueroa(2011)]{Moran11}Moran, P., and Perez-Figueroa, A. (2011). Methylation changes associated with early maturation stages in the Atlantic salmon. \emph{BMC genetics}, 12(1), 86. 
+
+\bibitem[Rodriguez et al.(2012)]{Rodriguez12} 
+Rodriguez, C. M., Moran, P., Lago, F., Beckmann, M., and Consuegra, S. (2012). Detection and quantification of tissue of origin in salmon and veal products using methylation sensitive AFLPs, \emph{Food Chemistry} 131, 1493-1498. 
+
+\end{thebibliography}
 
 \section{Session Info}
 This document was created using the following:
