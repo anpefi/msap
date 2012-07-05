@@ -24,13 +24,13 @@ foo <- packageDescription("msap")
 \maketitle
 
 \section{Introduction}
-\emph{msap} provides a deep analysis of epigenetic variation starting from a binary data matrix indicating the presence or absence of EcoRI-HpaII and EcoRI-MspI fragments, typical of MSAP technique. After compare the data from both enzyme combinations, the program determines if each fragment is susceptible of methylation (representative of epigenetic variation) or if there is no evidence of methylation (representative of genetic variation). Different analyses of the variation and differentiation (genetic and epigenetic) among user-defined groups of samples are then performed, as well as the classification of the methylation occurrences in those groups. A comprehensive report of the analyses and several useful plots could help researchers to asses the epigenetic variation in their experiments using MSAP. Standard AFLP data is also suitable to be analyzed. All analyses follow a band-based strategy (\citealp{Bonin07}). There are several examples in the literature of MSAP experiments using some of the analyses provided by \emph{msap} (see \citealp{Herrera10, Moran11, Chwedorzewska12, Gupta12, Rodriguez12}) so the package could be useful in those kind of approaches.
+\emph{msap} provides a deep analysis of epigenetic variation starting from a binary data matrix indicating the presence or absence of EcoRI-HpaII and EcoRI-MspI fragments, typical of MSAP technique. After comparing the data from both enzyme combinations, the program determines if each fragment is susceptible to methylation (representative of epigenetic variation) or if there is no evidence of methylation (representative of genetic variation). Different analyses of the variation and differentiation (genetic and epigenetic) among user-defined groups of samples are then performed, as well as the classification of the methylation occurrences in those groups. A comprehensive report of the analyses and several useful plots could help researchers to asses the epigenetic variation in their experiments using MSAP. Standard AFLP data is also suitable to be analyzed. All analyses follow a band-based strategy (\citealp{Bonin07}). There are several examples in the literature of MSAP experiments using some of the analyses provided by \emph{msap} (see \citealp{Herrera10, Moran11, Chwedorzewska12, Gupta12, Rodriguez12}) so the package could be useful in those kind of approaches.
 
 The package is intended to be easy to use even for those people non-familiar to the R environment. Advanced users could take advantage of available source code to adapt \emph{msap} for more complex analyses.
 
 \section{R basics. All you need to know about R to run \emph{msap}}
 
-The only knowledge required for installing and running \emph{msap} is about how to open an R session in your computer. R is a statistical programming language that provides many built in functions for performing statistical analysis and is also fexible to allow users to write their own functions.
+The only knowledge required for installing and running \emph{msap} is about how to open an R session in your computer. R is a statistical programming language that provides many built-in functions for performing statistical analysis and is also flexible to allow users to write their own functions.
 
 R can be downloaded and installed for free from the website http://cran.r-project.org where detailed instructions for installing R on any operating system are provided. Accessing R is different for every operating system. For windows users, simply double click the R icon that is created after installation. For Mac users, you can double click the R icon under your Applications menu. On Linux, in the terminal window simply type R at the command prompt and R will be opened within the terminal window.
 
@@ -79,9 +79,9 @@ We start by loading the msap package into an R session.
 library(msap)
 @
 
-It is highly recommended to change the working directory to that where datafile is located. Windows users can use the menu item 'File>Change dir' and choose the appropiate folder. To change the working directory within an R console run the command \verb@setwd(dir)@ where \emph{dir} is the absolute path to the directory. The output files created by \emph{msap} will be save in that working directory.
+It is highly recommended to change the working directory to that where datafile is located. Windows users can use the menu item 'File>Change dir' and choose the appropiate folder. To change the working directory within an R console run the command \verb@setwd(dir)@ where \emph{dir} is the absolute path to the directory. The output files created by \emph{msap} will be saved in that working directory.
 
-Once we are in the rigth working directory with an appropiate data file, we can run all analyses of \emph{msap} with a single command (change "example.csv" by the name of your datafile, keeping the quotes, and change "Example" by custom name to identify your data):
+Once we are in the right working directory with an appropiate data file, we can run all analyses of \emph{msap} with a single command (change "example.csv" by the name of your datafile, keeping the quotes, and change "Example" by custom name to identify your data):
 
 \begin{verbatim}
 > msap("example.csv", name="Example")
@@ -107,7 +107,7 @@ In addition to the above text report, \emph{msap} produces some exploratory figu
 \begin{figure}
 \centering
 \includegraphics[width=0.7\textwidth]{Example-MSL.png}
-\caption{Representation of Principal Coordinate Analysis (PCoA) for epigenetic (MSL) differentiation between groups. The first two coordinates (C1 and C2) are shown with the percentage of variance explained by them. Diferente point types represent individuals from different groups. Group labels show the centroid for the points cloud in each group. Ellipses represent the average dispersion of those poins aroun their centre. The long axis of the ellipse shows the direction of maximum dispersion and the short axis, the direction of minimum dispersion.}
+\caption{Representation of Principal Coordinate Analysis (PCoA) for epigenetic (MSL) differentiation between groups. The first two coordinates (C1 and C2) are shown with the percentage of variance explained by them. Different point types represent individuals from different groups. Group labels show the centroid for the points cloud in each group. Ellipses represent the average dispersion of those poins around their centre. The long axis of the ellipse shows the direction of maximum dispersion and the short axis, the direction of minimum dispersion.}
 \label{fig:msl}
 \end{figure}
 
@@ -170,15 +170,15 @@ use.groups=NULL)
 		Calculates and plots a Neighbour-Joining tree ('TRUE' by default) or skip it ('FALSE').
 	}
 	\item[use.groups]{
-		Gives the groups/populations/treatments of the datafile to be analysed. By default all groups are considered into de the analysis. To provide a subset of the groups a vector should be passed with the names of groups to be included. For example, in a datafile with 5 groups (Control, pop1, pop2, pop3 and pop4) we are interested only in Control and pops 1 and 3. Then, msap should be called with 'use.groups=c('Control','pop1','pop3')'.
+		Gives the groups/populations/treatments of the datafile to be analysed. By default all groups are considered for the analysis. To provide a subset of the groups a vector should be passed with the names of groups to be included. For example, in a datafile with 5 groups (Control, pop1, pop2, pop3 and pop4) we are interested only in Control and pops 1 and 3. Then, msap should be called with 'use.groups=c('Control','pop1','pop3')'.
 	}
 \end{description}
 
 \subsection{What if I need another kind of analysis for my MSAP data?}
-The analyses currently provided by \emph{msap} are limited but that does not mean that further analysis could be added in the future. I try to keep the package updated to allow exploratory assays of epigenetic diversity and differentiation, focused on the field of evolutionary ecology. If you are trying to analyse your MSAP data and options in \emph{msap} do not fit your requeriments, then you have three alternatives to get your tasks done by \emph{msap}:
+The analyses currently provided by \emph{msap} are limited but this does not mean that further analysis could not be added in the future. I try to keep the package updated to allow exploratory assays of epigenetic diversity and differentiation, focused on the field of evolutionary ecology. If you are trying to analyse your MSAP data and options in \emph{msap} do not fit your requirements, then you have three alternatives to get your tasks done by \emph{msap}:
 \begin{itemize}
 \item If you have programming skills or experience with R, then you can get the source code of \emph{msap} and adapt it to your needs. That is the main advantage of open source software!
-\item If you have programming skills or experience with R, and want to collaborate with me to expand \emph{msap}, then do not hesitate to contact me for joing to the development team.
+\item If you have programming skills or experience with R, and want to collaborate with me to expand \emph{msap}, then do not hesitate to contact me for joining the development team.
 \item If you are not familiar with R or do not feel confident to make code yourself, then use the support tracker to request new features in \emph{msap}.
 \end{itemize}
 
