@@ -46,7 +46,7 @@ To install the last stable version from CRAN:
 \end{verbatim}
 To get the last daily development version from R-Forge:
 \begin{verbatim}
-> install.packages("msap", repos="http://R-Forge.R-project.org")
+>  install.packages("msap", repos= c("http://R-Forge.R-project.org", getOption("repos")))
 \end{verbatim}
 
 The above instructions should install \emph{msap} and all required dependecies.
