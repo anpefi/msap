@@ -8,7 +8,7 @@
 	It performs all the analysis of MSAP data in order to asses both epigenetic and genetic diversity.   
 }
 \usage{
-	msap(datafile, name=datafile, uninformative=TRUE, nDec=4, meth=TRUE, rm.redundant=TRUE, rm.monomorphic=TRUE, do.pcoa=TRUE, do.shannon=TRUE, do.amova=TRUE, do.pairwisePhiST=TRUE, do.cluster=TRUE, use.groups=NULL)
+	msap(datafile, name=datafile, uninformative=TRUE, nDec=4, meth=TRUE, rm.redundant=TRUE, rm.monomorphic=TRUE, do.pcoa=TRUE, do.shannon=TRUE, do.amova=TRUE, do.pairwisePhiST=TRUE, do.cluster=TRUE, use.groups=NULL, do.mantel=FALSE, np.mantel=1000)
 }
 
 \arguments{
@@ -51,6 +51,12 @@
 	}
 	\item{use.groups}{
 		Gives the groups/populations/treatments of the datafile to be analysed. By default all groups are considered into de the analysis. To provide a subset of the groups a vector should be passed with the names of groups to be included. For example, in a datafile with 5 groups (Control, pop1, pop2, pop3 and pop4) we are interested only in Control and pops 1 and 3. Then, msap should be called with 'use.groups=c('Control','pop1','pop3')'.
+	}
+	\item{do.mantel}{
+		Performs a Mantel test to obtain correlation between MSL and NML ('TRUE') or skip it ('FALSE' by default).
+	}
+	\item{np.mantel}{
+		Gives the number of permutations for the above Mantel test (1000 by default) or skip it ('FALSE').
 	}
 
 }
