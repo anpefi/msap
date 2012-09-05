@@ -5,8 +5,9 @@
 
 
 
-msap <- function(datafile, name=datafile, uninformative=TRUE, nDec=4, meth=TRUE, rm.redundant=TRUE, rm.monomorphic=TRUE, do.pcoa=TRUE, do.shannon=TRUE, do.amova=TRUE, do.pairwisePhiST=TRUE, do.cluster=TRUE, use.groups=NULL){
+msap <- function(datafile, name=datafile, uninformative=TRUE, nDec=4, meth=TRUE, rm.redundant=TRUE, rm.monomorphic=TRUE, do.pcoa=TRUE, do.shannon=TRUE, do.amova=TRUE, do.pairwisePhiST=TRUE, do.cluster=TRUE, use.groups=NULL, do.mantel=FALSE, np.mantel=1000){
 	
+	GlobalE <- globalenv()
 	cat("\nmsap - Statistical analysis for Methilation-Sensitive Amplification Polimorphism data\n")
 
 	#Read datafile
@@ -80,18 +81,18 @@ msap <- function(datafile, name=datafile, uninformative=TRUE, nDec=4, meth=TRUE,
 		NML.ploci <- length(which(PolyN))
 		cat("Number of polymorphic MSL: ",MSL.ploci," (",format(MSL.ploci/MSL.nloci*100,digits=1),"% of total MSL)\n")
 		cat("Number of polymorphic NML: ",NML.ploci," (",format(NML.ploci/NML.nloci*100,digits=1),"% of total NML)\n\n")
-		NML.nloci <- NML.ploci
-		MSL.nloci <- MSL.ploci
+		
 		if(rm.monomorphic){
 			matM <- matM[,PolyM]
-			if(NML.nloci>0) matN <- matN[,PolyN]
-			#Note: 
+			if(NML.ploci>0) matN <- matN[,PolyN]
+			NML.nloci <- NML.ploci
+			MSL.nloci <- MSL.ploci 
 		}
 		
-		MSL.I <- apply(matM, 2, shannon)
+		if(MSL.nloci>0) MSL.I <- apply(matM, 2, shannon)
 		if(NML.nloci>0) NML.I <- apply(matN, 2, shannon)
-		cat("\nShannon's Diversity Index \n")
-		cat("MSL: I = ", mean(MSL.I, na.rm=T),"  (SD: ", sd(MSL.I, na.rm=T),")\n")
+		if(MSL.nloci>0)cat("\nShannon's Diversity Index \n")
+		if(MSL.nloci>0) cat("MSL: I = ", mean(MSL.I, na.rm=T),"  (SD: ", sd(MSL.I, na.rm=T),")\n")
 		if(NML.nloci>0){
 		cat("NML: I = ", mean(NML.I, na.rm=T),"  (SD: ", sd(NML.I, na.rm=T),")\n")
 		wt<-wilcox.test(MSL.I,NML.I)
@@ -103,12 +104,65 @@ msap <- function(datafile, name=datafile, uninformative=TRUE, nDec=4, meth=TRUE,
 		}
 	
 		### MSL 
-		cat("\n\n*****************************\nAnalysis of MSL\n")
-		repMet(dataMIX[,MSL], groups, nDec)
+		if(MSL.nloci>0){
 		
-		#shannon for every group
+			cat("\n\n*****************************\nAnalysis of MSL\n")
+			repMet(dataMIX[,MSL], groups, nDec)
+		
+			#shannon for every group
 	
-		DM<-lingoes(as.dist(smc(matM, dist=TRUE))) #Simple Matching Coefficient, from scrime
+			DM<-lingoes(as.dist(smc(matM, dist=TRUE))) #Simple Matching Coefficient, from scrime
+		
+			if(do.cluster){
+				# cluster
+				DM_copy <- DM
+				attr(DM_copy, "Labels") <- inds
+				np <- table(groups)[]
+				MSL.cluster <-nj(DM_copy) 
+				darksch <- c("#1B9E77","#D95F02","#7570B3","#E7298A","#66A61E","#A6761D","#666666","#E64AB02")
+				tipCol<-rep(darksch[1:length(np)],np)
+				ecol<-unlist(lapply(MSL.cluster$edge[,2], edgeCol, length(MSL.cluster$tip.label), tipCol))
+				png(filename=paste(name,"MSL-NJ.png", sep='-'))
+				plot.phylo(MSL.cluster, tip.color=rep(darksch[1:length(np)],np), use.edge.length=T, edge.color=ecol, edge.width=3, show.tip.label=T, main="MSL")
+				legend("bottomright", as.character(levels(groups)), col=darksch, lwd=3)
+				dev.off()
+			}
+		
+			#export 
+			#assign("MSLmat", DM, envir=globalenv())
+			#assign("pops", groups, envir=globalenv())
+			#PCoA
+			if(do.pcoa)pcoa(DM, groups, name, "MSL")
+			GlobalE[["DM.MSL"]]<-DM
+			GlobalE[["pops"]]<-groups
+			if(do.amova){
+				#AMOVA
+				cat("\nPerforming AMOVA\n")
+				diffAmova(DM, groups, nDec, do.pairwisePhiST)
+			}
+		} #end if MSL.loci>0
+		else{
+		cat("There is not polymorphic NML. Diversity Analysis skipped.\n")
+	}		
+	
+	} #end if meth
+	else{  #meth=FALSE -> AFLP
+		cat("Analysis for standard AFLP loci !!!\n")
+		inds<-as.character(data[,2])
+		groups <- factor(data[,1]) #Here, all rows are indepedent samples
+		ntt <- length(levels(groups))
+		matN <- as.matrix(data[,4:length(data[1,])])
+		NML.nloci <- length(locus)
+		matN[matN==1]<-2
+		matN[matN==0]<-1 
+		cat("Number of samples/individuals: ",length(inds),"\n")
+		cat("Number of groups/populations: ",ntt,"\n")
+		PolyN <- apply(matN, 2, polymorphic)
+		NML.ploci <- length(which(PolyN))
+		cat("Number of polymorphic AFLP: ",NML.ploci," (",format(NML.ploci/NML.nloci*100,digits=1),"% of total)\n\n")
+		NML.nloci <- NML.ploci
+		
+		DM<-lingoes(as.dist(smc(matN, dist=TRUE))) #smc(scrime), lingoes(ade4)
 		
 		if(do.cluster){
 			# cluster
@@ -119,34 +173,23 @@ msap <- function(datafile, name=datafile, uninformative=TRUE, nDec=4, meth=TRUE,
 			darksch <- c("#1B9E77","#D95F02","#7570B3","#E7298A","#66A61E","#A6761D","#666666","#E64AB02")
 			tipCol<-rep(darksch[1:length(np)],np)
 			ecol<-unlist(lapply(MSL.cluster$edge[,2], edgeCol, length(MSL.cluster$tip.label), tipCol))
-			png(filename=paste(name,"MSL-NJ.png", sep='-'))
-			plot.phylo(MSL.cluster, tip.color=rep(darksch[1:length(np)],np), use.edge.length=T, edge.color=ecol, edge.width=3, show.tip.label=T, main="MSL")
+			png(filename=paste(name,"AFLP-NJ.png", sep='-'))
+			plot.phylo(MSL.cluster, tip.color=rep(darksch[1:length(np)],np), use.edge.length=T, edge.color=ecol, edge.width=3, show.tip.label=T, main="AFLP")
 			legend("bottomright", as.character(levels(groups)), col=darksch, lwd=3)
 			dev.off()
+			
 		}
 		
-		#export 
-		#assign("MSLmat", DM, envir=globalenv())
-		#assign("pops", groups, envir=globalenv())
 		#PCoA
-		if(do.pcoa)pcoa(DM, groups, name, "MSL")
-		assign("DM.MSL", DM, envir=globalenv())
-		assign("pops", groups, envir=globalenv())
+		if(do.pcoa) pcoa(DM, groups, name, "AFLP")
+		GlobalE[["DM.AFLP"]]<-DM
 		if(do.amova){
 			#AMOVA
 			cat("\nPerforming AMOVA\n")
 			diffAmova(DM, groups, nDec, do.pairwisePhiST)
 		}
-	
-	} #end if meth
-	else{  #meth=FALSE -> AFLP
-		groups <- factor(data[,1]) #Here, all rows are indepedent samples
-		ntt <- length(levels(groups))
-		matN <- as.matrix(data[,4:length(data[1,])])
-		matN[matN==1]<-2
-		matN[matN==0]<-1 
-		cat("Number of samples/individuals: ",length(data[,1]),"\n")
-		cat("Number of groups/populations: ",ntt,"\n")
+		
+		NML.nloci <- 0  #Added to skip NML analysis
 	}
 	#### NML
 	if(NML.nloci>0){	
@@ -165,19 +208,28 @@ msap <- function(datafile, name=datafile, uninformative=TRUE, nDec=4, meth=TRUE,
 			plot.phylo(MSL.cluster, tip.color=rep(darksch[1:length(np)],np), use.edge.length=T, edge.color=ecol, edge.width=3, show.tip.label=T, main="NML")
 			legend("bottomright", as.character(levels(groups)), col=darksch, lwd=3)
 			dev.off()
+			
 		}
 		#PCoA
 		if(do.pcoa) pcoa(DM, groups, name, "NML")
-		assign("DM.MNL", DM, envir=globalenv())
+		GlobalE[["DM.MSL"]]<-DM
 		if(do.amova){
 			#AMOVA
 			cat("\nPerforming AMOVA\n")
 			diffAmova(DM, groups, nDec, do.pairwisePhiST)
 		}
-	
+		
+		if(do.mantel){
+			mtl <-mantel.randtest(GlobalE$DM.MSL, GlobalE$DM.NML, np.mantel)
+			pval<-ifelse(mtl$pvalue<0.0001, "P < 0.0001", paste("P = ",format(mtl$pvalue, digits=nDec)))
+			cat("\nMantel test (MSL/NML): r = ", mtl$obs," (",pval,"; nperm= ",mtl$rep,")\n")
+		}
+	}
+	else{
+		cat("There is not polymorphic NML. Diversitu Analysis skipped.\n")
 	}
 	
-	 
+	 cat("Done!\n")
 }
 
 
