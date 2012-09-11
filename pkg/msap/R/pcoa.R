@@ -1,7 +1,7 @@
 
 
 
-pcoa <- function(DM, groups,name,surname){
+pcoa <- function(DM, groups, inds, name,surname){
 	ntt <- length(levels(groups))
 	#PCoA
 	pcol <- dudi.pco(DM, scannf = FALSE, nf = 2) #from ade4
@@ -26,5 +26,9 @@ pcoa <- function(DM, groups,name,surname){
 	}	
 	s.class(pcol$li, groups, cpoint=0, col=bgcolors, add.plot=TRUE)
 	dev.off()
+	
+	prefix <- paste(name,surname,sep='-')
+	write.csv(data.frame(Group=groups,ind=inds,pcol$tab), file=paste(prefix,"PCoA.coor.csv", sep='-'))
+	write.csv(data.frame(pcol$eig), file=paste(prefix,"PCoA.eige.csv", sep='-'))
 
 }

@@ -8,7 +8,7 @@
 msap <- function(datafile, name=datafile, uninformative=TRUE, nDec=4, meth=TRUE, rm.redundant=TRUE, rm.monomorphic=TRUE, do.pcoa=TRUE, do.shannon=TRUE, do.amova=TRUE, do.pairwisePhiST=TRUE, do.cluster=TRUE, use.groups=NULL, do.mantel=FALSE, np.mantel=1000){
 	
 	GlobalE <- globalenv()
-	cat("\nmsap - Statistical analysis for Methilation-Sensitive Amplification Polimorphism data\n")
+	cat("\nmsap 1.0.1 - Statistical analysis for Methilation-Sensitive Amplification Polimorphism data\n")
 
 	#Read datafile
 	cat("\nReading ", datafile,"\n")
@@ -109,7 +109,6 @@ msap <- function(datafile, name=datafile, uninformative=TRUE, nDec=4, meth=TRUE,
 			cat("\n\n*****************************\nAnalysis of MSL\n")
 			repMet(dataMIX[,MSL], groups, nDec)
 		
-			#shannon for every group
 	
 			DM<-lingoes(as.dist(smc(matM, dist=TRUE))) #Simple Matching Coefficient, from scrime
 		
@@ -132,7 +131,7 @@ msap <- function(datafile, name=datafile, uninformative=TRUE, nDec=4, meth=TRUE,
 			#assign("MSLmat", DM, envir=globalenv())
 			#assign("pops", groups, envir=globalenv())
 			#PCoA
-			if(do.pcoa)pcoa(DM, groups, name, "MSL")
+			if(do.pcoa)pcoa(DM, groups, inds, name, "MSL")
 			GlobalE[["DM.MSL"]]<-DM
 			GlobalE[["pops"]]<-groups
 			if(do.amova){
@@ -181,7 +180,7 @@ msap <- function(datafile, name=datafile, uninformative=TRUE, nDec=4, meth=TRUE,
 		}
 		
 		#PCoA
-		if(do.pcoa) pcoa(DM, groups, name, "AFLP")
+		if(do.pcoa) pcoa(DM, groups, inds, name, "AFLP")
 		GlobalE[["DM.AFLP"]]<-DM
 		if(do.amova){
 			#AMOVA
@@ -211,7 +210,7 @@ msap <- function(datafile, name=datafile, uninformative=TRUE, nDec=4, meth=TRUE,
 			
 		}
 		#PCoA
-		if(do.pcoa) pcoa(DM, groups, name, "NML")
+		if(do.pcoa) pcoa(DM, groups, inds, name, "NML")
 		GlobalE[["DM.MSL"]]<-DM
 		if(do.amova){
 			#AMOVA
