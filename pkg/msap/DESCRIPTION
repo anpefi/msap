@@ -1,6 +1,6 @@
 Package: msap
-Version: 1.0
-Date: 2012-09-05
+Version: 1.0.1
+Date: 2012-09-11
 Title: Statistical analysis for Methylation-sensitive Amplification Polymorphism data
 Authors@R: person("Andres", "Perez-Figueroa", role = c("aut", "cre"), email = "anpefi@uvigo.es")
 Author: Andres Perez-Figueroa

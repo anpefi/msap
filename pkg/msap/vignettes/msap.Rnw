@@ -118,6 +118,17 @@ In addition to the above text report, \emph{msap} produces some exploratory figu
 \label{fig:tree}
 \end{figure}
 
+Furthermore, some files (.csv format) with useful data are produced to be processed with external programs 
+
+\begin{itemize}
+\item A table with the PCoA coordinates in all axis for each sample. It is saved as '\emph{<name>}-MSL-PCoA.coor.csv' and '\emph{<name>}-NML-PCoA.coor.csv' for MSL and NML respectively, where \emph{<name>} represents the name passed as argument in the calling to msap function.
+
+\item A table with the eigenvalues for all axis obtained by PCoA saved as '\emph{<name>}-MSL-PCoA.eige.csv' and '\emph{<name>}-NML-PCoA.eige.csv' for MSL and NML respectively
+
+\end{itemize}
+
+
+
 \subsection{Further options}
 In the previous section, the basic use of \emph{msap} was described. However, it is possible to set some different options in the program if passed as arguments to the msap() function. 
 
