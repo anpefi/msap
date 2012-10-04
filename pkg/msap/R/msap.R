@@ -1,5 +1,5 @@
 # msap - Statistical analysis for Methilattion-Sensitive Amplification Polimorphism data
-# version: 0.1-2
+# version: 1.0.2
 # Author: Andrés Pérez-Figueroa (anpefi@uvigo.es)
 
 
@@ -8,7 +8,7 @@
 msap <- function(datafile, name=datafile, uninformative=TRUE, nDec=4, meth=TRUE, rm.redundant=TRUE, rm.monomorphic=TRUE, do.pcoa=TRUE, do.shannon=TRUE, do.amova=TRUE, do.pairwisePhiST=TRUE, do.cluster=TRUE, use.groups=NULL, do.mantel=FALSE, np.mantel=1000){
 	
 	GlobalE <- globalenv()
-	cat("\nmsap 1.0.1 - Statistical analysis for Methilation-Sensitive Amplification Polimorphism data\n")
+	cat("\nmsap 1.0.2 - Statistical analysis for Methilation-Sensitive Amplification Polimorphism data\n")
 
 	#Read datafile
 	cat("\nReading ", datafile,"\n")
@@ -49,21 +49,24 @@ msap <- function(datafile, name=datafile, uninformative=TRUE, nDec=4, meth=TRUE,
 		NML.nloci <- length(Met[NML])
 		cat("Number of Methylation-Susceptible Loci (MSL): ",MSL.nloci,"\n")
 		cat("Number of No Methylated Loci (NML): ",NML.nloci,"\n\n")
+				
 		
 		if (uninformative){
 		#This transformation assumes that HPA-/MSP- pattern is uninformative as it could represent full methylation of cytosines in the target or that target is missing by mutation. 
 		#Herrera & Bazaga 2010
 			
-			dataMSL <- dataMIX[,MSL]
-			dataNML <- dataMIX[,NML]
-			dataMSL[dataMSL==0] <- NA
-			dataMSL[dataMSL==1] <- 2
-			dataMSL[dataMSL==11] <- 1
-			dataMSL[dataMSL==10] <- 2
-			dataNML <- ifelse(dataNML==0, 1, 2)
+			if(MSL.nloci>0) dataMSL <- dataMIX[,MSL]
+			if(NML.nloci>0) dataNML <- dataMIX[,NML]
+			if(MSL.nloci>0){
+				dataMSL[dataMSL==0] <- NA
+				dataMSL[dataMSL==1] <- 2
+				dataMSL[dataMSL==11] <- 1
+				dataMSL[dataMSL==10] <- 2
+			}
+			if(NML.nloci>0) dataNML <- ifelse(dataNML==0, 1, 2)
 		
-			matM <- as.matrix(dataMSL)
-			matN <- as.matrix(dataNML)
+			if(MSL.nloci>0) matM <- as.matrix(dataMSL)
+			if(NML.nloci>0) matN <- as.matrix(dataNML)
 		}
 		else
 		{
@@ -71,19 +74,21 @@ msap <- function(datafile, name=datafile, uninformative=TRUE, nDec=4, meth=TRUE,
 			#Lu et al. 2008; Gupta et al. 2012
 
 			dataMIXb <- ifelse(dataMIX==11, 2, 1)
-			matM <- as.matrix(dataMIXb[,MSL])
-			matN <- as.matrix(dataMIXb[,NML])
+			if(MSL.nloci>0) matM <- as.matrix(dataMIXb[,MSL])
+			if(NML.nloci>0) matN <- as.matrix(dataMIXb[,NML])
 		}
 		
-		PolyM <- apply(matM, 2, polymorphic)
-		PolyN <- apply(matN, 2, polymorphic)
-		MSL.ploci <- length(which(PolyM))
-		NML.ploci <- length(which(PolyN))
-		cat("Number of polymorphic MSL: ",MSL.ploci," (",format(MSL.ploci/MSL.nloci*100,digits=1),"% of total MSL)\n")
-		cat("Number of polymorphic NML: ",NML.ploci," (",format(NML.ploci/NML.nloci*100,digits=1),"% of total NML)\n\n")
+		if(MSL.nloci>0) PolyM <- apply(matM, 2, polymorphic)
+		if(NML.nloci>0) PolyN <- apply(matN, 2, polymorphic)
+		if(MSL.nloci>0) MSL.ploci <- length(which(PolyM))
+		else MSL.ploci <- 0
+		if(NML.nloci>0) NML.ploci <- length(which(PolyN))
+		else NML.ploci <-0
+		if(MSL.nloci>0) cat("Number of polymorphic MSL: ",MSL.ploci," (",format(MSL.ploci/MSL.nloci*100,digits=1),"% of total MSL)\n")
+		if(NML.nloci>0) cat("Number of polymorphic NML: ",NML.ploci," (",format(NML.ploci/NML.nloci*100,digits=1),"% of total NML)\n\n")
 		
 		if(rm.monomorphic){
-			matM <- matM[,PolyM]
+			if(MSL.ploci>0) matM <- matM[,PolyM]
 			if(NML.ploci>0) matN <- matN[,PolyN]
 			NML.nloci <- NML.ploci
 			MSL.nloci <- MSL.ploci 
@@ -141,7 +146,7 @@ msap <- function(datafile, name=datafile, uninformative=TRUE, nDec=4, meth=TRUE,
 			}
 		} #end if MSL.loci>0
 		else{
-		cat("There is not polymorphic NML. Diversity Analysis skipped.\n")
+		cat("There are not polymorphic MSL. Diversity Analysis skipped.\n")
 	}		
 	
 	} #end if meth
@@ -225,7 +230,7 @@ msap <- function(datafile, name=datafile, uninformative=TRUE, nDec=4, meth=TRUE,
 		}
 	}
 	else{
-		cat("There is not polymorphic NML. Diversitu Analysis skipped.\n")
+		cat("There are not polymorphic NML. Diversity Analysis skipped.\n")
 	}
 	
 	 cat("Done!\n")

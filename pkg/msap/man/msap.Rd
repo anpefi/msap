@@ -73,4 +73,14 @@
 \seealso{
 	\code{\link{rmsap-package}}
 }
+\examples{
+	#Perform all default analysis
+	\dontrun{msap("MyDataFile", name="MyAnalysis")}
+	#Perform analysis assumes that HPA-/MSP- represents full methylation 
+	\dontrun{msap("MyDataFile", name="MyAnalysis", uninformative=FALSE)}
+	#The same that above but skipping the PCoA results 
+	\dontrun{msap("MyDataFile", name="MyAnalysis", uninformative=FALSE, do.pcoa=FALSE)}
+	#Using only some of the populations
+	\dontrun{msap("MyDataFile", name="MyAnalysis", use.groups=c('Control','pop1','pop3'))}
+}
 
