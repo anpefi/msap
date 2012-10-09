@@ -74,7 +74,7 @@ If you want to analyze a standard AFLP dataset the datafile format is the same, 
 \end{figure}
 
 \section{Running \emph{msap}}
-We start by loading the msap package into an R session.
+We start by loading the msap package into an R session\footnote{Windows users have a step-by-step guide in section \ref{sec:WinRun}}.
 <<>>=
 library(msap)
 @
@@ -198,6 +198,51 @@ The analyses currently provided by \emph{msap} are limited but this does not mea
 \item If you have programming skills or experience with R, and want to collaborate with me to expand \emph{msap}, then do not hesitate to contact me for joining the development team.
 \item If you are not familiar with R or do not feel confident to make code yourself, then use the support tracker to request new features in \emph{msap}.
 \end{itemize}
+
+\section{Frequently Asked Questions}
+These are some questions that users have made about the use of \emph{msap}. Here I try to answer them with step-by-step procedures.
+\subsection{I'm very new into R and usign Windows, what steps must I follow to analyse my MSAP data?}
+Please follow these instructions carefully:
+\label{sec:WinRun}
+\begin{enumerate}
+\item Open R by double clicking its icon in your program list or shortcut in desktop.
+
+\item Check the working directory by typing in the R consoles: \emph{getwd()}
+      This would return the current working directory (i.e: \emph{[1] "C:/Documents and Settings/andres/Mis documentos"}), if this is not the desired (i.e. that with the input file) then you have to change it (or, alternatively, move your datafile to that folder)
+
+\item Change the working directory. You have two alternatives to do this:
+	\begin{itemize}
+    \item By typing: \emph{setwd("C:/Documents and Settings/andres/Mis documentos/TheFolderWithMyData/")}   changing the route to that folder where your datafile lies.
+    \item By selecting the folder from the R menu item File > Change dir.  The selected folder (that containing your datafile) will be the working directory now.
+    \end{itemize}
+
+\item Optionally check that change was right by typing \emph{getwd()} again and check if your datafile is in the working directory by typing \emph{dir()} that will list all files in the working directory.
+
+\item Now R is ready. Load the package (that you have installed before) by typing: \emph{library(msap)}  and run the analyses by typing: \emph{msap("yourdatafile.csv", name="YourAnalysis")}   or adding further option parameters (within the parenthesis comma separated) as described in the Further Options section. With some experience you would skip steps 2 and 4.
+
+
+\item A text resport will appear in the R window (that you can copy-paste) and some files will be created (starting by "YourAnalysis-" and described in the user guide) in the working directory/folder.
+\end{enumerate}
+\subsection{Can I analyze AFLP data? How?}
+Yes, it is possible to analyse standard AFLP data by skipping all data transformation and classification of MSL/NML and going directly to diversity/differentiation analysis. To do this, there is just a couple of steps:
+\begin{enumerate}
+\item The file format is the same that for MSAP data, but for AFLP the third column (enzyme label) will be ignored AND each row is an individual sample (recall that for MSAP there were 2 rows per sample). It sould be something like that:
+\begin{verbatim}
+,,,m1,m2,m3,m4.....
+Pop1,i1,ANYTHING,1,1,0,1.....
+Pop1,i2,ANYTHING,0,0,1,1.....
+Pop1,i3,ANYTHING,1,0,0,0.....
+Pop2,i4,ANYTHING,0,0,1,1.....
+Pop2,i6,ANYTHING,1,0,0,0.....
+Pop2,i6,ANYTHING,1,1,1,1.....
+\end{verbatim}
+
+\item Run the program with the option meth=FALSE (so it skips all methylation-related stuff):
+\begin{verbatim}
+msap("MyAFLPdatafile.csv", name="AFLPanalysis", meth=FALSE)
+\end{verbatim}
+\end{enumerate}
+This is useful for those experiments that combine MSAP profiles and AFLP profiles to compare epigenetic vs. genetic variation, as both can be analysed with the same program.
 
 
 \begin{thebibliography}{9}
