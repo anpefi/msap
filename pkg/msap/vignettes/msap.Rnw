@@ -56,8 +56,10 @@ The above instructions should install \emph{msap} and all required dependecies.
 In order to use \emph{msap} for analyzing your results from a MSAP experiment, you need to provide a data file with a binary matrix (1/0) indicating the presence or absence of EcoRI-HpaII and EcoRI-MspI fragments in a bunch of samples of two or more populations/groups.
 Data file should be a .csv file with markers as columns and two rows by sample, one for each isoschizomer reaction. File could be edited in the a spreadsheet of your choice (see Figure~\ref{fig:data}) and then saved as csv (with ',' as field separator). The final text file should look like Figure~\ref{fig:csv} if opened in a text editor.
 
-The first row should include the markers name/references. The first column should provide the label for the group where the sample is included, with the aim to make comparisons between different groups. Second column is reserved for an arbitrary label (i.e. to name the sample). Third column should identify the isoschizomer with 'HPA' or 'MSP'.
-If you want to analyze a standard AFLP dataset the datafile format is the same, but the program will ignore content of third column and treat all rows as independent samples.
+The first row should include the markers name/references, these should be ordered by primer combination (if applicable) as analysis will be seprated for them. The first column should provide the label for the group where the sample is included, with the aim to make comparisons between different groups. Second column is reserved for an arbitrary label (i.e. to name the sample). Third column should identify the isoschizomer with 'HPA' or 'MSP'. From version 1.1.0 the fragment classification is done within the different primer combinations using their own error rate. Marker list (columns fourth to end) should be ordered by primer combinations (take note of the number of markers per primer combination, as they will be required as argument later).
+
+If you want to analyze a standard AFLP dataset (or any other dominant markers coded by a 1/0 matrix) the datafile format is the same, but the program will ignore content of third column and treat all rows as independent samples.
+
 
 \begin{figure}
 \centering
@@ -118,10 +120,12 @@ In addition to the above text report, \emph{msap} produces some exploratory figu
 \label{fig:tree}
 \end{figure}
 
-Furthermore, some files (.csv format) with useful data are produced to be processed with external programs 
+Furthermore, some files (.csv format) with useful data are produced, in the working directory, to be processed with external programs: 
 
 \begin{itemize}
-\item A table with the PCoA coordinates in all axis for each sample. It is saved as '\emph{<name>}-MSL-PCoA.coor.csv' and '\emph{<name>}-NML-PCoA.coor.csv' for MSL and NML respectively, where \emph{<name>} represents the name passed as argument in the calling to msap function.
+\item A couple of .csv files with the transformed data matrices for MSL and NML. They are saved as '\emph{<name>}-MSL-transformed.csv' and '\emph{<name>}-NML-transformed.csv' for MSL and NML respectively, where \emph{<name>} represents the name passed as argument in the calling to msap function.
+
+\item A table with the PCoA coordinates in all axis for each sample. It is saved as '\emph{<name>}-MSL-PCoA.coor.csv' and '\emph{<name>}-NML-PCoA.coor.csv' for MSL and NML respectively.
 
 \item A table with the eigenvalues for all axis obtained by PCoA saved as '\emph{<name>}-MSL-PCoA.eige.csv' and '\emph{<name>}-NML-PCoA.eige.csv' for MSL and NML respectively
 
@@ -134,11 +138,12 @@ In the previous section, the basic use of \emph{msap} was described. However, it
 
 Here is the full usage of msap() function including all the arguments and their default values (if applicable). Except for the 'datafile' that is required, all other arguments are optional.
 \begin{verbatim}
-msap(datafile, name=datafile, uninformative=TRUE, 
-nDec=4, meth=TRUE, rm.redundant=TRUE,
-rm.monomorphic=TRUE, do.pcoa=TRUE, do.shannon=TRUE, 
-do.amova=TRUE, do.pairwisePhiST=TRUE, do.cluster=TRUE, 
-use.groups=NULL)
+msap(datafile, name=datafile, no.bands = "u", nDec=4, 
+meth=TRUE, rm.redundant=TRUE, rm.monomorphic=TRUE, 
+do.pcoa=TRUE, do.shannon=TRUE, do.amova=TRUE, 
+do.pairwisePhiST=TRUE, do.cluster=TRUE, use.groups=NULL, 
+do.mantel=FALSE, np.mantel=1000, loci.per.primer=NULL, 
+error.rate.primer=NULL,  uninformative=TRUE)
 \end{verbatim}
 
 \begin{description}
@@ -149,15 +154,19 @@ use.groups=NULL)
   	\item[name]{
   		a name for the dataset to be included in the output files. By default, the name of the given datafile is used.  
 	}
-  	\item[uninformative]{
-  		A logical value determining how to deal with HPA-/MSP- pattern. 'FALSE' assumes that HPA-/MSP- (no band for both isoschizomers) pattern represents full methylation of cytosines in the target, while 'TRUE' (default value) consider that pattern as uninformative as could be caused by a missing target (mutation). See 'Details' below.
+  	\item[no.bands]{
+  		String to indicate how to deal with HPA-/MSP- pattern in MSL, with two possible values: 'h' for hypermethylated state and 'u' for uninformative state (default). 
+  		
+  		With 'h' researcher assumes that HPA-/MSP- (no band for both isoschizomers) pattern represents full methylation of cytosines in the target (hypermethylation) ignoring the chance of genetic change in the target. This approach could be very useful when no much genetic differences are expected between samples (i.e. the same individuals are compared for different treatments). In this case HPA-/MSP- will compute as 'methylated' state in the binary matrix used for subsequent analysis. See \citealp{Gupta12} for an example of this kind of approach.
+  		
+  		With 'u' (default value), researcher considers that pattern as uninformative as could be caused by a missing target (mutation) as well as by hypermethylation. So, in this case, HPA-/MSP- will compute as missing values in the binary matrix used for subsequent analysis. This should be the chosen approach in almost all ecology studies. See \citealp{Herrera10} for an example.
 	}
   
   	\item[nDec]{
   		number of digits of precision for floating point output.
 	}
 	\item[meth]{
-  	Logical value switching between MSAP ('TRUE') and standard AFLP ('FALSE') analysis. The difference lies in that for AFLP (meth=FALSE) the 'enzyme' column is ignored and every row in data represent an independent sample, without combination of data. 
+  	Logical value switching between MSAP ('TRUE') and standard AFLP ('FALSE') analysis. The difference lies in that for AFLP (or any other dominant marker coded by a 1/0 matrix) the 'enzyme' column is ignored and every row in data represent an independent sample, without combination of data. This is useful to compare MSAP (epigentic) and AFLP (genetic) differentiation using the same analyses.
 	}
 	\item[rm.redundant]{
 		Not implemented yet.
@@ -189,25 +198,26 @@ use.groups=NULL)
 	\item[use.groups]{
 		Gives the groups/populations/treatments of the datafile to be analysed. By default all groups are considered for the analysis. To provide a subset of the groups a vector should be passed with the names of groups to be included. For example, in a datafile with 5 groups (Control, pop1, pop2, pop3 and pop4) we are interested only in Control and pops 1 and 3. Then, msap should be called with 'use.groups=c('Control','pop1','pop3')'.
 	}
+	\item[loci.per.primer]{
+		Vector providing the number of loci/fragements obtained per primer combination. Fragment classsification is performed independenty for each primer combination. These fragment should be ordered in the datafilein the sameway as specified here. If this is nor provided (by default) then all fragments should be analyzed as they come from a single combination. For example, if there are three primer combinations with 135, 234 and 210 loci each, then msap should be called with 'loci.per.primer=c(135,234,210)'
+	}
+	\item[error.rate.primer]{
+		Gives the repeatibility value of MSAP assays for each primer combination. It provides a threshold to consider methylation events as genotyping errors.
+	}
+	\item[uninformative]{
+		This is a deprecated argument kept for compatilibility porpouses with previous versions.
+	}
 \end{description}
-
-\subsection{What if I need another kind of analysis for my MSAP data?}
-The analyses currently provided by \emph{msap} are limited but this does not mean that further analysis could not be added in the future. I try to keep the package updated to allow exploratory assays of epigenetic diversity and differentiation, focused on the field of evolutionary ecology. If you are trying to analyse your MSAP data and options in \emph{msap} do not fit your requirements, then you have three alternatives to get your tasks done by \emph{msap}:
-\begin{itemize}
-\item If you have programming skills or experience with R, then you can get the source code of \emph{msap} and adapt it to your needs. That is the main advantage of open source software!
-\item If you have programming skills or experience with R, and want to collaborate with me to expand \emph{msap}, then do not hesitate to contact me for joining the development team.
-\item If you are not familiar with R or do not feel confident to make code yourself, then use the support tracker to request new features in \emph{msap}.
-\end{itemize}
 
 \section{Frequently Asked Questions}
 These are some questions that users have made about the use of \emph{msap}. Here I try to answer them with step-by-step procedures.
-\subsection{I'm very new into R and usign Windows, what steps must I follow to analyse my MSAP data?}
+\subsection{I'm very new into R and I run it under Windows, what steps must I follow to analyse my MSAP data?}
 Please follow these instructions carefully:
 \label{sec:WinRun}
 \begin{enumerate}
 \item Open R by double clicking its icon in your program list or shortcut in desktop.
 
-\item Check the working directory by typing in the R consoles: \emph{getwd()}
+\item Check the working directory by typing in the R console: \emph{getwd()}
       This would return the current working directory (i.e: \emph{[1] "C:/Documents and Settings/andres/Mis documentos"}), if this is not the desired (i.e. that with the input file) then you have to change it (or, alternatively, move your datafile to that folder)
 
 \item Change the working directory. You have two alternatives to do this:
@@ -218,10 +228,10 @@ Please follow these instructions carefully:
 
 \item Optionally check that change was right by typing \emph{getwd()} again and check if your datafile is in the working directory by typing \emph{dir()} that will list all files in the working directory.
 
-\item Now R is ready. Load the package (that you have installed before) by typing: \emph{library(msap)}  and run the analyses by typing: \emph{msap("yourdatafile.csv", name="YourAnalysis")}   or adding further option parameters (within the parenthesis comma separated) as described in the Further Options section. With some experience you would skip steps 2 and 4.
+\item Now R is ready. Load the package (that you have installed before) by typing: \emph{library(msap)}  and run the analyses by typing: \emph{msap("yourdatafile.csv", name="YourAnalysis")}   or adding further option parameters (within the parenthesis and separated by commas) as described in the Further Options section. With some experience you would skip steps 2 and 4.
 
 
-\item A text resport will appear in the R window (that you can copy-paste) and some files will be created (starting by "YourAnalysis-" and described in the user guide) in the working directory/folder.
+\item A text report will appear in the R window (that you can copy-paste) and some files will be created (starting by "YourAnalysis-" and described in the user guide) in the working directory/folder.
 \end{enumerate}
 \subsection{Can I analyze AFLP data? How?}
 Yes, it is possible to analyse standard AFLP data by skipping all data transformation and classification of MSL/NML and going directly to diversity/differentiation analysis. To do this, there is just a couple of steps:
@@ -244,6 +254,13 @@ msap("MyAFLPdatafile.csv", name="AFLPanalysis", meth=FALSE)
 \end{enumerate}
 This is useful for those experiments that combine MSAP profiles and AFLP profiles to compare epigenetic vs. genetic variation, as both can be analysed with the same program.
 
+\subsection{What if I need another kind of analysis for my MSAP data?}
+The analyses currently provided by \emph{msap} are limited but this does not mean that further analysis could not be added in the future. I try to keep the package updated to allow exploratory assays of epigenetic diversity and differentiation, focused on the field of evolutionary ecology. If you are trying to analyse your MSAP data and options in \emph{msap} do not fit your requirements, then you have three alternatives to get your tasks done by \emph{msap}:
+\begin{itemize}
+\item If you have programming skills or experience with R, then you can get the source code of \emph{msap} and adapt it to your needs. That is the main advantage of open source software!
+\item If you have programming skills or experience with R, and want to collaborate with me to expand \emph{msap}, then do not hesitate to contact me for joining the development team.
+\item If you are not familiar with R or do not feel confident to make code yourself, then use the support tracker (in msap website) to request new features in \emph{msap}. I'll try to implement them as soon as possible.
+\end{itemize}
 
 \begin{thebibliography}{9}
 
