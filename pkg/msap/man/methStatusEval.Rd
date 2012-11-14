@@ -8,7 +8,7 @@ classify a locus as either MSL or NML.
 Classify a locus as either 'methylation-susceptible locus' (MSL) or 'non-methylated locus' (NML). See Details.  
 }
 \usage{
-methStatusEval(x, error=0.05, type=TRUE)
+methStatusEval(x, error=0.05, uninformative=TRUE)
 
 }
 \arguments{
@@ -18,8 +18,8 @@ methStatusEval(x, error=0.05, type=TRUE)
  \item{error}{
  	Repeatibility value of MSAP assays. It provides a threshold to consider methylation events as genotyping errors.
  } 
- \item{type}{
- 	A logical value determining how to deal with HPA-/MSP- pattern. 'FALSE' assumes that HPA-/MSP- (no band for both isoschizomers) pattern represents full methylation of cytosines in the target, while 'TRUE' (default value) consider that pattern as uninformative as could be caused by a missing target (mutation).
+ \item{uninformative}{
+ 	A logic value determining how to deal with HPA-/MSP- pattern. FALSE indicates that HPA-/MSP- stands for hypermethylated target (ignoring genetic mutation), and TRUE (default) stands for uninformative pattern (as this could be caused by genetic mutation or hypermethylation) 
  }
 }
 \details{

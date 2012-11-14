@@ -1,14 +1,54 @@
-# msap - Statistical analysis for Methilattion-Sensitive Amplification Polimorphism data
-# version: 1.0.2
+# msap - Statistical analysis for Methilation-Sensitive Amplification Polimorphism data
+# version: 1.1.0
 # Author: Andrés Pérez-Figueroa (anpefi@uvigo.es)
 
 
 
 
-msap <- function(datafile, name=datafile, uninformative=TRUE, nDec=4, meth=TRUE, rm.redundant=TRUE, rm.monomorphic=TRUE, do.pcoa=TRUE, do.shannon=TRUE, do.amova=TRUE, do.pairwisePhiST=TRUE, do.cluster=TRUE, use.groups=NULL, do.mantel=FALSE, np.mantel=1000){
+msap <- function(datafile, name=datafile, no.bands="u", nDec=4, meth=TRUE, rm.redundant=TRUE, rm.monomorphic=TRUE, do.pcoa=TRUE, do.shannon=TRUE, do.amova=TRUE, do.pairwisePhiST=TRUE, do.cluster=TRUE, use.groups=NULL, do.mantel=FALSE, np.mantel=1000, loci.per.primer=NULL, error.rate.primer=NULL, uninformative=TRUE){
 	
 	GlobalE <- globalenv()
-	cat("\nmsap 1.0.2 - Statistical analysis for Methilation-Sensitive Amplification Polimorphism data\n")
+	cat("\nmsap 1.1.0 - Statistical analysis for Methylation-Sensitive Amplification Polimorphism data\n")
+	 
+	 ########## CHECKING PARAMETERS ############
+	
+	#check no.bands parameter
+	#uninformative (default)
+	if (is.character(no.bands)){
+		if(no.bands=="u") uninformative <- TRUE #uninformative (default)
+		else if(no.bands=="h") uninformative <- FALSE #assuming hypermethilated target
+		else{
+			cat("\nWARNING: no.bands argument wrong. Using default value (no.bands=\"u\")\n\n")
+			uninformative <- TRUE #uninformative (default)
+		}
+	}
+	else cat("\nWARNING: no.bands argument wrong. Using default value (no.bands=\"u\")\n\n")
+	
+	#check loci.per.primer
+	n.primer <- 1 #default
+	if(is.vector(loci.per.primer)){
+		if(is.numeric(loci.per.primer)){
+			n.primer <- length(loci.per.primer)
+			
+		}
+		else cat("\nWARNING: fragments.per.primer argument wrong. Combining all fragments.\n\n")
+	}
+	
+	
+	#check error.rate.primer
+	if(is.vector(error.rate.primer)){
+		if(is.numeric(error.rate.primer)){
+			if(length(error.rate.primer)!=n.primer){
+				cat("\nWARNING: error.rate.primer argument doesn't match number of primers in loci.per.primer. Using default value (0.05) for all primer combinations\n\n")
+				error.rate.primer<-rep(0.05, n.primer)			
+			}
+			
+		}
+		else{
+			 cat("\nWARNING: error.rate.primer argument not valid. Using default value (0.05) for all primer combinations\n\n")
+			error.rate.primer<-rep(0.05, n.primer)		
+		}
+	}
 
 	#Read datafile
 	cat("\nReading ", datafile,"\n")
@@ -19,6 +59,10 @@ msap <- function(datafile, name=datafile, uninformative=TRUE, nDec=4, meth=TRUE,
 	cat("Number of loci: ",length(locus),"\n")
 	#sorting
 	data <- data[with(data, order(data[,1],data[,2],data[,3])),]
+	#set primer mask
+	if(is.null(loci.per.primer)) loci.per.primer <- c(length(locus)) #Avoids crash
+	if(is.null(error.rate.primer)) error.rate.primer <- rep(0.05, length(loci.per.primer))
+	primer.mask <- rep (1:length(loci.per.primer), loci.per.primer)
 	
 	
 	#If user just want to use some of the groups in the datafile
@@ -34,19 +78,34 @@ msap <- function(datafile, name=datafile, uninformative=TRUE, nDec=4, meth=TRUE,
 	
 	
 	if(meth){ #meth=TRUE -> MSAP
+	
+		############ FRAGMENT CLASSIFICATION ##############
 		inds <- as.character(data[data[,3]=="HPA",2])
 		groups <- factor(data[data[,3]=="HPA",1])  #Needed to refactor here 
 		ntt <- length(levels(groups))
 		cat("Number of samples/individuals: ",length(data[,1])/2,"\n")
 		cat("Number of groups/populations: ",ntt,"\n")
+		cat("Number of primer combinations: ",n.primer,"\n")
+		cat("Loci per primer combinations ",loci.per.primer,"\n")
+		cat("Error rates per primer combination: ",error.rate.primer,"\n")
 		dataMSP <- data[data[,3]=="MSP",4:length(data[1,])]
 		dataHPA <- data[data[,3]=="HPA",4:length(data[1,])]
 		dataMIX <- dataHPA*10+dataMSP
-		Met <- apply(dataMIX, 2, methStatusEval, type=uninformative)
+		#check methStatus within different primer combinations (since 1.1.0)
+		Met <- NULL
+		for (i in 1:n.primer){
+			temp <- apply(dataMIX[,which(primer.mask==i)], 2, methStatusEval, error=error.rate.primer[i], uninformative=uninformative)
+			Met <- c(Met,temp)
+			cat("Primer: ",i,"\n")
+			cat("--Number of Methylation-Susceptible Loci (MSL): ",length(which(temp)),"\n")
+			cat("--Number of No Methylated Loci (NML): ",length(which(!temp)),"\n\n")
+		}
+		#Met <- apply(dataMIX, 2, methStatusEval, type=uninformative)
 		MSL <- which(Met)
 		NML <- which(!Met)
 		MSL.nloci <- length(Met[MSL])
 		NML.nloci <- length(Met[NML])
+		cat("All combinations: \n")
 		cat("Number of Methylation-Susceptible Loci (MSL): ",MSL.nloci,"\n")
 		cat("Number of No Methylated Loci (NML): ",NML.nloci,"\n\n")
 				
@@ -68,9 +127,9 @@ msap <- function(datafile, name=datafile, uninformative=TRUE, nDec=4, meth=TRUE,
 			if(MSL.nloci>0) matM <- as.matrix(dataMSL)
 			if(NML.nloci>0) matN <- as.matrix(dataNML)
 		}
-		else
+		else 
 		{
-			#This transformation assumes that HPA-/MSP- pattern represents full methylation of cytosines in the target. Thus, all bands are scored as methylation.
+			#This transformation assumes that HPA-/MSP- pattern represents full methylation (hypermethilation) of cytosines in the target ignoring possible genetic differences. Thus, all bands are scored as methylation.
 			#Lu et al. 2008; Gupta et al. 2012
 
 			dataMIXb <- ifelse(dataMIX==11, 2, 1)
@@ -94,6 +153,15 @@ msap <- function(datafile, name=datafile, uninformative=TRUE, nDec=4, meth=TRUE,
 			MSL.nloci <- MSL.ploci 
 		}
 		
+		#save transformed files (MSL and NML)
+		if(MSL.nloci>0){
+			cat("- Saving transformed matrix for MSL in file: ",paste(name,"-MSL-transformed.csv"),"\n")
+		 	write.csv(data.frame(groups,inds,matM), file=paste(name,"-MSL-transformed.csv"), row.names=FALSE)
+		}
+		if(NML.nloci>0){
+			cat("- Saving transformed matrix for NML in file: ",paste(name,"-MSL-transformed.csv"),"\n")
+			write.csv(data.frame(groups,inds,matM), file=paste(name,"-NML-transformed.csv"), row.names=FALSE)
+		}
 		if(MSL.nloci>0) MSL.I <- apply(matM, 2, shannon)
 		if(NML.nloci>0) NML.I <- apply(matN, 2, shannon)
 		if(MSL.nloci>0)cat("\nShannon's Diversity Index \n")
