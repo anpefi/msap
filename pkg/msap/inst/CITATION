@@ -1,0 +1,18 @@
+citHeader("To cite msap in publications use:")
+
+citEntry(entry = "Article",
+         title        = "msap: a tool for the statistical analysis of methylation-sensitive amplified polymorphism data",
+         author       = personList(as.person("A. Perez-Figueroa")),
+         journal      = "Molecular Ecology Resources",
+         year         = "2013",
+         volume       = "",
+         number       = "",
+         pages        = "",
+         doi          = "doi: 10.1111/1755-0998.12064",
+         
+         textVersion  =
+           paste("Perez-Figueroa (2013).",
+                 "msap: a tool for the statistical analysis of methylation-sensitive amplified polymorphism data.",
+                 "Molecular Ecology Resources.",
+                 "doi: 10.1111/1755-0998.12064")
+)

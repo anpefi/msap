@@ -13,6 +13,7 @@
 % \VignetteIndexEntry{msap user's guide}
 
 \begin{document}
+\SweaveOpts{concordance=TRUE}
 
 <<foo,include=FALSE,echo=FALSE>>=
 options(keep.source = TRUE, width = 60)

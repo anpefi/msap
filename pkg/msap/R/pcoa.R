@@ -16,6 +16,7 @@ pcoa <- function(DM, groups, inds, name,surname){
 	maxY <- max(pcol$li$A2)
 	minY <- min(pcol$li$A2)
 	fullname <- paste(name,surname, sep='-')
+	cat("- Saving PCoA figure for ", surname, " in file: ", paste(fullname,"png",sep='.'),".....")
 	png(filename=paste(fullname,"png",sep='.'))
 	par(bty = 'n')
 	plot(0,0, main=paste(name,surname, sep=": "), type = "n",xlab=paste("C1 (",var1,"%)"),ylab=paste("C2 (",var2,"%)"), xlim=c(minX,maxX+0.1), ylim=c(minY,maxY+0.1), frame=TRUE, cex=1.5)
@@ -26,6 +27,7 @@ pcoa <- function(DM, groups, inds, name,surname){
 	}	
 	s.class(pcol$li, groups, cpoint=0, col=bgcolors, add.plot=TRUE)
 	dev.off()
+  cat("Ok!\n")
 	
 	prefix <- paste(name,surname,sep='-')
 	write.csv(data.frame(Group=groups,ind=inds,pcol$tab), file=paste(prefix,"PCoA.coor.csv", sep='-'))
