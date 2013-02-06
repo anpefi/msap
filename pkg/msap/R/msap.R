@@ -8,7 +8,7 @@
 msap <- function(datafile, name=datafile, no.bands="u", nDec=4, meth=TRUE, rm.redundant=TRUE, rm.monomorphic=TRUE, do.pcoa=TRUE, do.shannon=TRUE, do.amova=TRUE, do.pairwisePhiST=TRUE, do.cluster=TRUE, use.groups=NULL, do.mantel=FALSE, np.mantel=1000, loci.per.primer=NULL, error.rate.primer=NULL, uninformative=TRUE){
 	
 	GlobalE <- globalenv()
-	cat("\nmsap 1.1.0 - Statistical analysis for Methylation-Sensitive Amplification Polimorphism data\n")
+	cat("\nmsap 1.1.1 - Statistical analysis for Methylation-Sensitive Amplification Polimorphism data\n")
 	 
 	 ########## CHECKING PARAMETERS ############
 	
@@ -50,11 +50,39 @@ msap <- function(datafile, name=datafile, no.bands="u", nDec=4, meth=TRUE, rm.re
 		}
 	}
 
-	#Read datafile
-	cat("\nReading ", datafile,"\n")
+  ## CHECKING AND READING DATAFILE ##
+  
+	#File exists?
+	if(!file.exists(datafile)) stop(datafile," unreachable. File does not exist or you have no permissions to open it\n", call.=F)
+	#File has commas?
+	con<-file(datafile,"r")
+	str <- readLines(con)
+  close(con)
+	if(sum(unlist(strsplit(str[1], "")) == ",")==0) stop("Doesn't find \",\" in ",datafile,": Please use a .csv file with fields sepparated by commas")
+	else {
+	  # have all files the same number of fields?
+	  if(!(sum(unlist(strsplit(str[1], "")) == ",") == sum(unlist(strsplit(str[1:length(str)-1], "")) == ",")/(length(str)-1))) 
+	    stop ("Bad formatting. There are not the same number of columns in all the rows of the file, please check ", datafile," carefully (it should have the same number of commas in all its rows)")
+	}
+  
+	cat("\nReading ", datafile,".....")
 	data <- read.csv(datafile, header=TRUE)
 	
-	#get the loci names
+	#Check enzymes
+	temp <- factor(data[,3])
+	
+	if(!is.element("HPA",levels(temp))) stop("HPA missing. The third column should include both HPA and MSP (capital letters)")
+	if(!is.element("MSP",levels(temp))) stop("MSP missing. The third column should include both HPA and MSP (capital letters)")
+	if(!table(temp)["MSP"]==table(temp)["HPA"]) stop("There are not equal number of rows for HPA and MSP, please check ", datafile)
+	
+	#Check other values than 0/1
+	vals<-levels(factor(as.matrix(data[,4:length(data[1,])])))
+	if(!(length(vals)==2 && is.element("0", vals) && is.element("1",vals))) stop("There is one (or more) unusual values in the data matrix. Remember only 0 and 1 are allowed. Please, check ",datafile)
+	
+	cat(" Ok!\n")
+  
+  ## SETTING DATA ##
+  #get the loci names
 	locus <- colnames(data)[4:length(data[1,])]
 	cat("Number of loci: ",length(locus),"\n")
 	#sorting
@@ -155,11 +183,11 @@ msap <- function(datafile, name=datafile, no.bands="u", nDec=4, meth=TRUE, rm.re
 		
 		#save transformed files (MSL and NML)
 		if(MSL.nloci>0){
-			cat("- Saving transformed matrix for MSL in file: ",paste(name,"-MSL-transformed.csv"),"\n")
+			cat("- Saving transformed matrix for MSL in file: ",paste0(name,"-MSL-transformed.csv"),"\n")
 		 	write.csv(data.frame(groups,inds,matM), file=paste(name,"-MSL-transformed.csv"), row.names=FALSE)
 		}
 		if(NML.nloci>0){
-			cat("- Saving transformed matrix for NML in file: ",paste(name,"-MSL-transformed.csv"),"\n")
+			cat("- Saving transformed matrix for NML in file: ",paste0(name,"-NML-transformed.csv"),"\n")
 			write.csv(data.frame(groups,inds,matM), file=paste(name,"-NML-transformed.csv"), row.names=FALSE)
 		}
 		if(MSL.nloci>0) MSL.I <- apply(matM, 2, shannon)
@@ -181,7 +209,7 @@ msap <- function(datafile, name=datafile, no.bands="u", nDec=4, meth=TRUE, rm.re
 		
 			cat("\n\n*****************************\nAnalysis of MSL\n")
 			repMet(dataMIX[,MSL], groups, nDec)
-		
+		  cat("\n\n")
 	
 			DM<-lingoes(as.dist(smc(matM, dist=TRUE))) #Simple Matching Coefficient, from scrime
 		
@@ -194,10 +222,12 @@ msap <- function(datafile, name=datafile, no.bands="u", nDec=4, meth=TRUE, rm.re
 				darksch <- c("#1B9E77","#D95F02","#7570B3","#E7298A","#66A61E","#A6761D","#666666","#E64AB02")
 				tipCol<-rep(darksch[1:length(np)],np)
 				ecol<-unlist(lapply(MSL.cluster$edge[,2], edgeCol, length(MSL.cluster$tip.label), tipCol))
+				cat("- Saving clustering tree figure for MSL in file: ", paste(name,"MSL-NJ.png", sep='-'),".....")
 				png(filename=paste(name,"MSL-NJ.png", sep='-'))
 				plot.phylo(MSL.cluster, tip.color=rep(darksch[1:length(np)],np), use.edge.length=T, edge.color=ecol, edge.width=3, show.tip.label=T, main="MSL")
 				legend("bottomright", as.character(levels(groups)), col=darksch, lwd=3)
 				dev.off()
+        cat("Ok!\n")
 			}
 		
 			#export 
@@ -219,7 +249,7 @@ msap <- function(datafile, name=datafile, no.bands="u", nDec=4, meth=TRUE, rm.re
 	
 	} #end if meth
 	else{  #meth=FALSE -> AFLP
-		cat("Analysis for standard AFLP loci !!!\n")
+		cat("Analysis for standard AFLP loci !!!\n\n")
 		inds<-as.character(data[,2])
 		groups <- factor(data[,1]) #Here, all rows are indepedent samples
 		ntt <- length(levels(groups))
@@ -245,10 +275,12 @@ msap <- function(datafile, name=datafile, no.bands="u", nDec=4, meth=TRUE, rm.re
 			darksch <- c("#1B9E77","#D95F02","#7570B3","#E7298A","#66A61E","#A6761D","#666666","#E64AB02")
 			tipCol<-rep(darksch[1:length(np)],np)
 			ecol<-unlist(lapply(MSL.cluster$edge[,2], edgeCol, length(MSL.cluster$tip.label), tipCol))
+			cat("- Saving clustering tree figure for AFLP in file: ", paste(name,"AFLP-NJ.png", sep='-'),".....")
 			png(filename=paste(name,"AFLP-NJ.png", sep='-'))
 			plot.phylo(MSL.cluster, tip.color=rep(darksch[1:length(np)],np), use.edge.length=T, edge.color=ecol, edge.width=3, show.tip.label=T, main="AFLP")
 			legend("bottomright", as.character(levels(groups)), col=darksch, lwd=3)
 			dev.off()
+      cat("Ok!\n")
 			
 		}
 		
@@ -265,7 +297,7 @@ msap <- function(datafile, name=datafile, no.bands="u", nDec=4, meth=TRUE, rm.re
 	}
 	#### NML
 	if(NML.nloci>0){	
-		if(meth) cat("\n\n*****************************\nAnalysis of NML\n")
+		if(meth) cat("\n\n*****************************\nAnalysis of NML\n\n")
 		DM<-lingoes(as.dist(smc(matN, dist=TRUE))) #smc(scrime), lingoes(ade4)
 		if(do.cluster){
 			# cluster
@@ -276,10 +308,12 @@ msap <- function(datafile, name=datafile, no.bands="u", nDec=4, meth=TRUE, rm.re
 			darksch <- c("#1B9E77","#D95F02","#7570B3","#E7298A","#66A61E","#A6761D","#666666","#E64AB02")
 			tipCol<-rep(darksch[1:length(np)],np)
 			ecol<-unlist(lapply(MSL.cluster$edge[,2], edgeCol, length(MSL.cluster$tip.label), tipCol))
+			cat("- Saving clustering tree figure for NML in file: ", paste(name,"NML-NJ.png", sep='-'),".....")
 			png(filename=paste(name,"NML-NJ.png", sep='-'))
 			plot.phylo(MSL.cluster, tip.color=rep(darksch[1:length(np)],np), use.edge.length=T, edge.color=ecol, edge.width=3, show.tip.label=T, main="NML")
 			legend("bottomright", as.character(levels(groups)), col=darksch, lwd=3)
 			dev.off()
+      cat("Ok!\n")
 			
 		}
 		#PCoA
