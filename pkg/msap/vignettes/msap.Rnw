@@ -84,10 +84,16 @@ library(msap)
 
 It is highly recommended to change the working directory to that where datafile is located. Windows users can use the menu item 'File>Change dir' and choose the appropiate folder. To change the working directory within an R console run the command \verb@setwd(dir)@ where \emph{dir} is the absolute path to the directory. The output files created by \emph{msap} will be saved in that working directory.
 
-Once we are in the right working directory with an appropiate data file, we can run all analyses of \emph{msap} with a single command (change "example.csv" by the name of your datafile, keeping the quotes, and change "Example" by custom name to identify your data):
+Once we are in the right working directory with an appropiate data file, we can run all analyses of \emph{msap} with a single command (change "example.csv" by the name of your datafile, keeping the quotes, and change "Example" by a custom name, keeping quotes, to identify your data):
 
 \begin{verbatim}
-> msap("example.csv", name="Example")
+> msap("example.csv", name = "Example")
+\end{verbatim}
+
+Those users familiar with R would prefer to store the returning list (with several useful data for futher analysis) of msap:
+
+\begin{verbatim}
+> myList <- msap("example.csv", name = "Example")
 \end{verbatim}
 
 On execution, \emph{msap} will run all analyses and will show an on screen text report with the results:
