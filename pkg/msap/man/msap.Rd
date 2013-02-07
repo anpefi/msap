@@ -83,6 +83,15 @@
   	Data file should be a .csv file with markers as columns and two rows by sample, one for each isoschizomer reaction. The first row should include the markers name/references. The first column should provide the label for the group where the sample is included, with the aim to make comparisons between different gruops. Second column is reserved for an arbitrary label (i.e. to name the sample). Third column should identify the isochizomer with 'HPA' or 'MSP'.
   	
 }
+\value{
+    From version 1.1.2, msap returns a list with data useful for further analysis:
+    \item{groups}{A factor with the name of the group of every individual analysed}
+    \item{transformed.MSL}{A data frame including the binary (1: unmmethylated, 2: methylated) values for those loci classified as MSL}
+    \item{transformed.NML}{A data frame including the binary (1: unmmethylated, 2: methylated) values for those loci classified as NML}
+    \item{DM.MSL}{A distance matrix object between all individuals for those polymorphic loci classified as MSL}
+    \item{DM.NML}{A distance matrix object between all individuals for those polymorphic loci classified as NML}
+    \item{DM.AFLP}{A distance matrix object between all individuals when analysing AFLP data}
+}
 
 \author{
 	Andres Perez-Figueroa (\email{anpefi@uvigo.es})

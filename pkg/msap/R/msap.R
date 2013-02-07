@@ -7,8 +7,7 @@
 
 msap <- function(datafile, name=datafile, no.bands="u", nDec=4, meth=TRUE, rm.redundant=TRUE, rm.monomorphic=TRUE, do.pcoa=TRUE, do.shannon=TRUE, do.amova=TRUE, do.pairwisePhiST=TRUE, do.cluster=TRUE, use.groups=NULL, do.mantel=FALSE, np.mantel=1000, loci.per.primer=NULL, error.rate.primer=NULL, uninformative=TRUE){
 	
-	GlobalE <- globalenv()
-	cat("\nmsap 1.1.1 - Statistical analysis for Methylation-Sensitive Amplification Polimorphism data\n")
+	cat("\nmsap 1.1.2 - Statistical analysis for Methylation-Sensitive Amplification Polimorphism data\n")
 	 
 	 ########## CHECKING PARAMETERS ############
 	
@@ -160,7 +159,7 @@ msap <- function(datafile, name=datafile, no.bands="u", nDec=4, meth=TRUE, rm.re
 			#This transformation assumes that HPA-/MSP- pattern represents full methylation (hypermethilation) of cytosines in the target ignoring possible genetic differences. Thus, all bands are scored as methylation.
 			#Lu et al. 2008; Gupta et al. 2012
 
-			dataMIXb <- ifelse(dataMIX==11, 2, 1)
+			dataMIXb <- ifelse(dataMIX==11, 1, 2)  #changed in 1.1.2 for consistency to 1:unmmethylated 2:methylated. Previous values were not affect to the results from the analysis present at the moment
 			if(MSL.nloci>0) matM <- as.matrix(dataMIXb[,MSL])
 			if(NML.nloci>0) matN <- as.matrix(dataMIXb[,NML])
 		}
@@ -230,18 +229,15 @@ msap <- function(datafile, name=datafile, no.bands="u", nDec=4, meth=TRUE, rm.re
         cat("Ok!\n")
 			}
 		
-			#export 
-			#assign("MSLmat", DM, envir=globalenv())
-			#assign("pops", groups, envir=globalenv())
 			#PCoA
 			if(do.pcoa)pcoa(DM, groups, inds, name, "MSL")
-			GlobalE[["DM.MSL"]]<-DM
-			GlobalE[["pops"]]<-groups
 			if(do.amova){
 				#AMOVA
 				cat("\nPerforming AMOVA\n")
-				diffAmova(DM, groups, nDec, do.pairwisePhiST)
+     		diffAmova(DM, groups, nDec, do.pairwisePhiST)
 			}
+			
+      DM.MSL <- DM
 		} #end if MSL.loci>0
 		else{
 		cat("There are not polymorphic MSL. Diversity Analysis skipped.\n")
@@ -286,7 +282,8 @@ msap <- function(datafile, name=datafile, no.bands="u", nDec=4, meth=TRUE, rm.re
 		
 		#PCoA
 		if(do.pcoa) pcoa(DM, groups, inds, name, "AFLP")
-		GlobalE[["DM.AFLP"]]<-DM
+		
+		DM.AFLP<-DM
 		if(do.amova){
 			#AMOVA
 			cat("\nPerforming AMOVA\n")
@@ -313,12 +310,13 @@ msap <- function(datafile, name=datafile, no.bands="u", nDec=4, meth=TRUE, rm.re
 			plot.phylo(MSL.cluster, tip.color=rep(darksch[1:length(np)],np), use.edge.length=T, edge.color=ecol, edge.width=3, show.tip.label=T, main="NML")
 			legend("bottomright", as.character(levels(groups)), col=darksch, lwd=3)
 			dev.off()
+      DM.NML <- DM
       cat("Ok!\n")
 			
 		}
 		#PCoA
 		if(do.pcoa) pcoa(DM, groups, inds, name, "NML")
-		GlobalE[["DM.MSL"]]<-DM
+		
 		if(do.amova){
 			#AMOVA
 			cat("\nPerforming AMOVA\n")
@@ -326,7 +324,7 @@ msap <- function(datafile, name=datafile, no.bands="u", nDec=4, meth=TRUE, rm.re
 		}
 		
 		if(do.mantel){
-			mtl <-mantel.randtest(GlobalE$DM.MSL, GlobalE$DM.NML, np.mantel)
+			mtl <-mantel.randtest(DM.MSL, DM.NML, np.mantel)
 			pval<-ifelse(mtl$pvalue<0.0001, "P < 0.0001", paste("P = ",format(mtl$pvalue, digits=nDec)))
 			cat("\nMantel test (MSL/NML): r = ", mtl$obs," (",pval,"; nperm= ",mtl$rep,")\n")
 		}
@@ -335,7 +333,18 @@ msap <- function(datafile, name=datafile, no.bands="u", nDec=4, meth=TRUE, rm.re
 		cat("There are not polymorphic NML. Diversity Analysis skipped.\n")
 	}
 	
+  #Storing some interesting item in a list to be returned (as suggested by C. Herrera)
+	res <- list(
+    groups = if(exists("groups")) {groups} else {NULL},
+    transformed.MSL = if(MSL.nloci>0) {data.frame(groups,inds,matM)} else {NULL},
+    transformed.NML = if(NML.nloci>0) {data.frame(groups,inds,matN)} else {NULL},
+    DM.MSL = if(exists("DM.MSL")) {DM.MSL} else {NULL},
+    DM.NML = if(exists("DM.NML")) {DM.NML} else {NULL},
+    DM.AFLP = if(exists("DM.AFLP")) {DM.AFLP} else {NULL}
+    )
+  
 	 cat("Done!\n")
+   invisible(res)
 }
 
 
