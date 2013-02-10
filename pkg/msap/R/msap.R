@@ -1,5 +1,5 @@
 # msap - Statistical analysis for Methilation-Sensitive Amplification Polimorphism data
-# version: 1.1.0
+# version: 1.1.3
 # Author: Andrés Pérez-Figueroa (anpefi@uvigo.es)
 
 
@@ -7,7 +7,7 @@
 
 msap <- function(datafile, name=datafile, no.bands="u", nDec=4, meth=TRUE, rm.redundant=TRUE, rm.monomorphic=TRUE, do.pcoa=TRUE, do.shannon=TRUE, do.amova=TRUE, do.pairwisePhiST=TRUE, do.cluster=TRUE, use.groups=NULL, do.mantel=FALSE, np.mantel=1000, loci.per.primer=NULL, error.rate.primer=NULL, uninformative=TRUE){
 	
-	cat("\nmsap 1.1.2 - Statistical analysis for Methylation-Sensitive Amplification Polimorphism data\n")
+	cat("\nmsap 1.1.3 - Statistical analysis for Methylation-Sensitive Amplification Polimorphism data\n")
 	 
 	 ########## CHECKING PARAMETERS ############
 	
@@ -182,11 +182,11 @@ msap <- function(datafile, name=datafile, no.bands="u", nDec=4, meth=TRUE, rm.re
 		
 		#save transformed files (MSL and NML)
 		if(MSL.nloci>0){
-			cat("- Saving transformed matrix for MSL in file: ",paste0(name,"-MSL-transformed.csv"),"\n")
+			cat("- Saving transformed matrix for MSL in file: ",paste(name,"-MSL-transformed.csv",sep=""),"\n")
 		 	write.csv(data.frame(groups,inds,matM), file=paste(name,"-MSL-transformed.csv"), row.names=FALSE)
 		}
 		if(NML.nloci>0){
-			cat("- Saving transformed matrix for NML in file: ",paste0(name,"-NML-transformed.csv"),"\n")
+			cat("- Saving transformed matrix for NML in file: ",paste(name,"-NML-transformed.csv",sep=""),"\n")
 			write.csv(data.frame(groups,inds,matM), file=paste(name,"-NML-transformed.csv"), row.names=FALSE)
 		}
 		if(MSL.nloci>0) MSL.I <- apply(matM, 2, shannon)
