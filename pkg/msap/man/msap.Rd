@@ -86,6 +86,7 @@
 \value{
     From version 1.1.2, msap returns a list with data useful for further analysis:
     \item{groups}{A factor with the name of the group of every individual analysed}
+    \item{patterns}{A list showing the MSAP patterns (11, 10, 01 and 00 coded as u, h, i, f) in all groups }
     \item{transformed.MSL}{A data frame including the binary (1: unmmethylated, 2: methylated) values for those loci classified as MSL}
     \item{transformed.NML}{A data frame including the binary (1: unmmethylated, 2: methylated) values for those loci classified as NML}
     \item{DM.MSL}{A distance matrix object between all individuals for those polymorphic loci classified as MSL}

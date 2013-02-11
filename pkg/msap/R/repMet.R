@@ -22,4 +22,5 @@ repMet <-function(dataM,groups,nDec){
 	res[4,x] <- res[4,x]/suma
 	}
 	print(res, digits=nDec)
+  return(dataM)
 }
