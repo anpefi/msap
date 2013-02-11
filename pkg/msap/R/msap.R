@@ -1,5 +1,5 @@
 # msap - Statistical analysis for Methilation-Sensitive Amplification Polimorphism data
-# version: 1.1.3
+# version: 1.1.4
 # Author: Andrés Pérez-Figueroa (anpefi@uvigo.es)
 
 
@@ -7,7 +7,7 @@
 
 msap <- function(datafile, name=datafile, no.bands="u", nDec=4, meth=TRUE, rm.redundant=TRUE, rm.monomorphic=TRUE, do.pcoa=TRUE, do.shannon=TRUE, do.amova=TRUE, do.pairwisePhiST=TRUE, do.cluster=TRUE, use.groups=NULL, do.mantel=FALSE, np.mantel=1000, loci.per.primer=NULL, error.rate.primer=NULL, uninformative=TRUE){
 	
-	cat("\nmsap 1.1.3 - Statistical analysis for Methylation-Sensitive Amplification Polimorphism data\n")
+	cat("\nmsap 1.1.4 - Statistical analysis for Methylation-Sensitive Amplification Polimorphism data\n")
 	 
 	 ########## CHECKING PARAMETERS ############
 	
@@ -207,7 +207,7 @@ msap <- function(datafile, name=datafile, no.bands="u", nDec=4, meth=TRUE, rm.re
 		if(MSL.nloci>0){
 		
 			cat("\n\n*****************************\nAnalysis of MSL\n")
-			repMet(dataMIX[,MSL], groups, nDec)
+			meth.rep <- repMet(dataMIX[,MSL], groups, nDec)
 		  cat("\n\n")
 	
 			DM<-lingoes(as.dist(smc(matM, dist=TRUE))) #Simple Matching Coefficient, from scrime
@@ -336,12 +336,13 @@ msap <- function(datafile, name=datafile, no.bands="u", nDec=4, meth=TRUE, rm.re
   #Storing some interesting item in a list to be returned (as suggested by C. Herrera)
 	res <- list(
     groups = if(exists("groups")) {groups} else {NULL},
+    patterns = if(exists("meth.rep")) {meth.rep} else {NULL},
     transformed.MSL = if(MSL.nloci>0) {data.frame(groups,inds,matM)} else {NULL},
     transformed.NML = if(NML.nloci>0) {data.frame(groups,inds,matN)} else {NULL},
     DM.MSL = if(exists("DM.MSL")) {DM.MSL} else {NULL},
     DM.NML = if(exists("DM.NML")) {DM.NML} else {NULL},
     DM.AFLP = if(exists("DM.AFLP")) {DM.AFLP} else {NULL}
-    )
+     )
   
 	 cat("Done!\n")
    invisible(res)
