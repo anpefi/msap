@@ -183,11 +183,11 @@ msap <- function(datafile, name=datafile, no.bands="u", nDec=4, meth=TRUE, rm.re
 		#save transformed files (MSL and NML)
 		if(MSL.nloci>0){
 			cat("- Saving transformed matrix for MSL in file: ",paste(name,"-MSL-transformed.csv",sep=""),"\n")
-		 	write.csv(data.frame(groups,inds,matM), file=paste(name,"-MSL-transformed.csv"), row.names=FALSE)
+		 	write.csv(data.frame(groups,inds,matM), file=paste(name,"-MSL-transformed.csv",sep=""), row.names=FALSE)
 		}
 		if(NML.nloci>0){
 			cat("- Saving transformed matrix for NML in file: ",paste(name,"-NML-transformed.csv",sep=""),"\n")
-			write.csv(data.frame(groups,inds,matM), file=paste(name,"-NML-transformed.csv"), row.names=FALSE)
+			write.csv(data.frame(groups,inds,matN), file=paste(name,"-NML-transformed.csv",sep=""), row.names=FALSE)
 		}
 		if(MSL.nloci>0) MSL.I <- apply(matM, 2, shannon)
 		if(NML.nloci>0) NML.I <- apply(matN, 2, shannon)
