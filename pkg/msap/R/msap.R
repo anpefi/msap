@@ -1,13 +1,12 @@
 # msap - Statistical analysis for Methilation-Sensitive Amplification Polimorphism data
-# version: 1.1.4
 # Author: Andrés Pérez-Figueroa (anpefi@uvigo.es)
 
 
 
 
 msap <- function(datafile, name=datafile, no.bands="u", nDec=4, meth=TRUE, rm.redundant=TRUE, rm.monomorphic=TRUE, do.pcoa=TRUE, do.shannon=TRUE, do.amova=TRUE, do.pairwisePhiST=TRUE, do.cluster=TRUE, use.groups=NULL, do.mantel=FALSE, np.mantel=1000, loci.per.primer=NULL, error.rate.primer=NULL, uninformative=TRUE){
-	
-	cat("\nmsap 1.1.4 - Statistical analysis for Methylation-Sensitive Amplification Polimorphism data\n")
+	msapVer <- as.character(packageVersion("msap"))
+	cat(paste("\nmsap ", msapVer, " - Statistical analysis for Methylation-Sensitive Amplification Polimorphism data\n"),sep="")
 	 
 	 ########## CHECKING PARAMETERS ############
 	
@@ -67,13 +66,14 @@ msap <- function(datafile, name=datafile, no.bands="u", nDec=4, meth=TRUE, rm.re
 	cat("\nReading ", datafile,".....")
 	data <- read.csv(datafile, header=TRUE)
 	
-	#Check enzymes
-	temp <- factor(data[,3])
+	if(meth){
+    #Check enzymes
+	  temp <- factor(data[,3])
 	
-	if(!is.element("HPA",levels(temp))) stop("HPA missing. The third column should include both HPA and MSP (capital letters)")
-	if(!is.element("MSP",levels(temp))) stop("MSP missing. The third column should include both HPA and MSP (capital letters)")
-	if(!table(temp)["MSP"]==table(temp)["HPA"]) stop("There are not equal number of rows for HPA and MSP, please check ", datafile)
-	
+	  if(!is.element("HPA",levels(temp))) stop("HPA missing. The third column should include both HPA and MSP (capital letters)")
+	  if(!is.element("MSP",levels(temp))) stop("MSP missing. The third column should include both HPA and MSP (capital letters)")
+	  if(!table(temp)["MSP"]==table(temp)["HPA"]) stop("There are not equal number of rows for HPA and MSP, please check ", datafile)
+	}
 	#Check other values than 0/1
 	vals<-levels(factor(as.matrix(data[,4:length(data[1,])])))
 	if(!(length(vals)==2 && is.element("0", vals) && is.element("1",vals))) stop("There is one (or more) unusual values in the data matrix. Remember only 0 and 1 are allowed. Please, check ",datafile)
@@ -330,15 +330,15 @@ msap <- function(datafile, name=datafile, no.bands="u", nDec=4, meth=TRUE, rm.re
 		}
 	}
 	else{
-		cat("There are not polymorphic NML. Diversity Analysis skipped.\n")
+		if(meth) cat("There are not polymorphic NML. Diversity Analysis skipped.\n")
 	}
 	
   #Storing some interesting item in a list to be returned (as suggested by C. Herrera)
 	res <- list(
     groups = if(exists("groups")) {groups} else {NULL},
-    patterns = if(exists("meth.rep")) {meth.rep} else {NULL},
-    transformed.MSL = if(MSL.nloci>0) {data.frame(groups,inds,matM)} else {NULL},
-    transformed.NML = if(NML.nloci>0) {data.frame(groups,inds,matN)} else {NULL},
+    patterns = if(meth && exists("meth.rep")) {meth.rep} else {NULL},
+    transformed.MSL = if(meth && MSL.nloci>0) {data.frame(groups,inds,matM)} else {NULL},
+    transformed.NML =  if(meth && NML.nloci>0) {data.frame(groups,inds,matN)} else {NULL},
     DM.MSL = if(exists("DM.MSL")) {DM.MSL} else {NULL},
     DM.NML = if(exists("DM.NML")) {DM.NML} else {NULL},
     DM.AFLP = if(exists("DM.AFLP")) {DM.AFLP} else {NULL}
