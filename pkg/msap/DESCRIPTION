@@ -9,4 +9,4 @@ Depends: R (>= 2.14.0), ade4, scrime, pegas, cba, ape
 Description: Statistical Analyses of Methylation-sensitive Amplification Polymorphism (MSAP) assays.
 License: GPL (>= 2)
 URL: http://msap.r-forge.r-project.org/
-BugReports: http://pkgname.bugtracker.url
+BugReports: https://r-forge.r-project.org/tracker/?func=browse&group_id=1422&atid=5292
