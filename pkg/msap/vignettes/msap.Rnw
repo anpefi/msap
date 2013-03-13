@@ -100,10 +100,21 @@ On execution, \emph{msap} will run all analyses and will show an on screen text 
 
 
 <<echo=FALSE>>=
-msap("example.csv",name="Example")
+res <- msap("example.csv",name="Example")
 @
 
-In addition to the above text report, \emph{msap} produces some exploratory figures that are directly saved into .png files:
+From version 1.1.2, msap returns a list with data useful for further analysis. These are the data slots stored in the list:
+\begin{itemize}
+    \item{groups}{A factor with the name of the group of every individual analysed}
+    \item{patterns}{A list showing the MSAP patterns (11, 10, 01 and 00 coded as u, h, i, f) in all groups }
+    \item{transformed.MSL}{A data frame including the binary (1: unmmethylated, 2: methylated) values for those loci classified as MSL}
+    \item{transformed.NML}{A data frame including the binary (1: unmmethylated, 2: methylated) values for those loci classified as NML}
+    \item{DM.MSL}{A distance matrix object between all individuals for those polymorphic loci classified as MSL}
+    \item{DM.NML}{A distance matrix object between all individuals for those polymorphic loci classified as NML}
+    \item{DM.AFLP}{A distance matrix object between all individuals when analysing AFLP data}
+\end{itemize}
+
+In addition, \emph{msap} also produces some exploratory figures that are directly saved into .png files:
 
 \begin{itemize}
 \item A plot of Principal Coordinate Analysis (PCoA), see Figure~\ref{fig:msl}, showing the first two axis. They are saved as '\emph{<name>}-MSL.png' and '\emph{<name>}-NML.png' for MSL and NML respectively, where \emph{<name>} represents the name passed as argument in the calling to msap function.
