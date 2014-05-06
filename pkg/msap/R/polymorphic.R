@@ -9,7 +9,7 @@ polymorphic <- function(col){
 	} 
 	if(length(tcol)==1) return(FALSE)
 	if(length(tcol)==2){
-		if(min(tcol)>1) return (TRUE)
+		if(min(tcol)>0) return (TRUE)
 		else return (FALSE)
 	}
 }

@@ -1,6 +1,4 @@
 importFrom("ade4",lingoes,dudi.pco,s.class)
 importFrom("scrime",smc)
-importFrom("pegas",amova)
-importFrom("ape", nj)
-import(cba)
+importFrom("ape", nj, plot.phylo)
 export(msap,shannon)
