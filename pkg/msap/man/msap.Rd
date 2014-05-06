@@ -8,7 +8,7 @@
 	It performs all the analysis of MSAP data in order to asses both epigenetic and genetic diversity.   
 }
 \usage{
-	msap(datafile, name=datafile, no.bands = "u", nDec=4, meth=TRUE, rm.redundant=TRUE, rm.monomorphic=TRUE, do.pcoa=TRUE, do.shannon=TRUE, do.amova=TRUE, do.pairwisePhiST=TRUE, do.cluster=TRUE, use.groups=NULL, do.mantel=FALSE, np.mantel=1000, loci.per.primer=NULL, error.rate.primer=NULL, uninformative=TRUE)
+	msap(datafile, name=datafile, no.bands = "u", nDec=4, meth=TRUE, rm.redundant=TRUE, rm.monomorphic=TRUE, do.pcoa=TRUE, do.shannon=TRUE, do.amova=TRUE, do.pairwisePhiST=FALSE, do.cluster=TRUE, use.groups=NULL, do.mantel=FALSE, np.mantel=1000, loci.per.primer=NULL, error.rate.primer=NULL, uninformative=TRUE)
 }
 
 \arguments{
@@ -48,7 +48,7 @@
 		Option switcher for doing an AMOVA for differentiation between groups. TRUE by default.
 	}
 	\item{do.pairwisePhiST}{
-		Logical value switching between the calculation of the pairwise Phi_st between pairs of groups/populations ('TRUE' by default) or skip it ('FALSE').
+		Logical value switching between the calculation of the pairwise Phi_st between pairs of groups/populations ('TRUE' ) or skip it ('FALSE' by default).
 	}
 	\item{do.cluster}{
 		Calculates and plots a Neighbour-Joining tree ('TRUE' by default) or skip it ('FALSE').
