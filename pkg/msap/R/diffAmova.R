@@ -232,7 +232,7 @@ diffAmova <- function(DM, groups, nDec, pairwise){
 				cat(levels(groups)[i], " - ",levels(groups)[j],": ",format(phiST,trim=T,digits=nDec),"\t ",pval," \n")
 			}
 		}
-	}#end if pairwise
+}#end if pairwise
   
   
   ###############################################
