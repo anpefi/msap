@@ -1,4 +1,3 @@
-importFrom("ade4",lingoes,dudi.pco,s.class)
-importFrom("scrime",smc)
-importFrom("ape", nj, plot.phylo)
+importFrom("ade4", s.class, mantel.randtest)
+importFrom("ape", nj, plot.phylo,perm.rowscols)
 export(msap,shannon)

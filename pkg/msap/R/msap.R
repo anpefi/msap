@@ -209,9 +209,9 @@ msap <- function(datafile, name=datafile, no.bands="u", nDec=4, meth=TRUE, rm.re
 			cat("\n\n*****************************\nAnalysis of MSL\n")
 			meth.rep <- repMet(dataMIX[,MSL], groups, nDec)
 		  cat("\n\n")
-	
-			DM<-lingoes(as.dist(smc(matM, dist=TRUE))) #Simple Matching Coefficient, from scrime
-		
+
+
+		  DM<- dist(matM, method="euclidean", upper=T, diag=T)
 			if(do.cluster){
 				# cluster
 				DM_copy <- DM
@@ -259,8 +259,8 @@ msap <- function(datafile, name=datafile, no.bands="u", nDec=4, meth=TRUE, rm.re
 		cat("Number of polymorphic AFLP: ",NML.ploci," (",format(NML.ploci/NML.nloci*100,digits=1),"% of total)\n\n")
 		NML.nloci <- NML.ploci
 		
-		DM<-lingoes(as.dist(smc(matN, dist=TRUE))) #smc(scrime), lingoes(ade4)
 		
+		DM<- dist(matN, method="euclidean", upper=T, diag=T)
 		if(do.cluster){
 			# cluster
 			DM_copy <- DM
@@ -293,7 +293,7 @@ msap <- function(datafile, name=datafile, no.bands="u", nDec=4, meth=TRUE, rm.re
 	#### NML
 	if(NML.nloci>1){	
 		if(meth) cat("\n\n*****************************\nAnalysis of NML\n\n")
-		DM<-lingoes(as.dist(smc(matN, dist=TRUE))) #smc(scrime), lingoes(ade4)
+		DM<- dist(matN, method="euclidean", upper=T, diag=T)
 		if(do.cluster){
 			# cluster
 			DM_copy <- DM
