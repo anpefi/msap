@@ -2,7 +2,9 @@ Package: msap
 Version: 1.1.8
 Date: 2014-05-07
 Title: Statistical analysis for Methylation-sensitive Amplification Polymorphism data
-Authors@R: person("Andres", "Perez-Figueroa", role = c("aut", "cre"), email = "anpefi@uvigo.es")
+Authors@R: c(person("Andres", "Perez-Figueroa", role = c("aut", "cre"), email = "anpefi@uvigo.es"))
+Author: Andres Perez-Figueroa [aut, cre]
+Maintainer: Andres Perez-Figueroa <anpefi@uvigo.es>
 Depends: R (>= 2.14.0)
 Imports: ade4, ape
 Description: Statistical Analyses of Methylation-sensitive Amplification Polymorphism (MSAP) assays.
