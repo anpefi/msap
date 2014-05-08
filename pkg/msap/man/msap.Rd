@@ -8,7 +8,11 @@
 	It performs all the analysis of MSAP data in order to asses both epigenetic and genetic diversity.   
 }
 \usage{
-	msap(datafile, name=datafile, no.bands = "u", nDec=4, meth=TRUE, rm.redundant=TRUE, rm.monomorphic=TRUE, do.pcoa=TRUE, do.shannon=TRUE, do.amova=TRUE, do.pairwisePhiST=FALSE, do.cluster=TRUE, use.groups=NULL, do.mantel=FALSE, np.mantel=1000, loci.per.primer=NULL, error.rate.primer=NULL, uninformative=TRUE)
+	msap(datafile, name=datafile, no.bands = "u", nDec=4, meth=TRUE, 
+  rm.redundant=TRUE,   rm.monomorphic=TRUE, do.pcoa=TRUE, 
+  do.shannon=TRUE, do.amova=TRUE, do.pairwisePhiST=FALSE, 
+  do.cluster=TRUE, use.groups=NULL, do.mantel=FALSE, np.mantel=1000, 
+  loci.per.primer=NULL, error.rate.primer=NULL, uninformative=TRUE)
 }
 
 \arguments{
@@ -103,7 +107,8 @@
 \examples{
 	#Perform all default analysis
 	\dontrun{msap("MyDataFile", name="MyAnalysis")}
-	#Perform all default analysis for a dataset with 2 primer combinations (200 and 180 fragments each)
+	#Perform all default analysis for a dataset with 2 primer combinations 
+  #(200 and 180 fragments each)
 	\dontrun{msap("MyDataFile", name="MyAnalysis", loci.per.primer=c(200, 180))}
 	#Perform analysis assumes that HPA-/MSP- represents full methylation 
 	\dontrun{msap("MyDataFile", name="MyAnalysis", uninformative=FALSE)}
