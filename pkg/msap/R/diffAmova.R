@@ -222,7 +222,7 @@ diffAmova <- function(DM, groups, nDec, pairwise){
 				p1 <- which(groups==levels(groups)[i])
 				p2 <- which(groups==levels(groups)[j])
 				ttos <- groups[c(p1,p2)]
-				M <- subset(DM,c(p1,p2))
+				M <- as.dist(as.matrix(DM)[c(p1,p2),c(p1,p2)])
 				a <- amova2(M ~ ttos, nperm=10000)
 				pval<-as.numeric(a$varcomp$P.value[1])
 	
