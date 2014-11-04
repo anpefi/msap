@@ -4,7 +4,7 @@
 pcoa <- function(DM, groups, inds, name,surname){
 	ntt <- length(levels(groups))
 	#PCoA
-  pcol <- cmdscale(DM, eig=T)
+  pcol <- cmdscale(DM, k=length(inds)-1, eig=T)
 
 	var <- pcol$eig / sum(pcol$eig) *100
 	var
