@@ -5,14 +5,14 @@ citEntry(entry = "Article",
          author       = personList(as.person("A. Perez-Figueroa")),
          journal      = "Molecular Ecology Resources",
          year         = "2013",
-         volume       = "",
-         number       = "",
-         pages        = "",
-         doi          = "doi: 10.1111/1755-0998.12064",
+         volume       = "13",
+         number       = "3",
+         pages        = "522-527",
+         doi          = "10.1111/1755-0998.12064",
          
          textVersion  =
            paste("Perez-Figueroa (2013).",
                  "msap: a tool for the statistical analysis of methylation-sensitive amplified polymorphism data.",
-                 "Molecular Ecology Resources.",
+                 "Molecular Ecology Resources 13:522-527",
                  "doi: 10.1111/1755-0998.12064")
 )
