@@ -33,8 +33,24 @@ You can install msap automatically from within a R session:
     ```
 
 
-## How to use msap
-You can find the most recent version of the user's guide vignette in [this link](https://github.com/anpefi/msap/blob/master/pkg/msap/vignettes/msap.pdf).
+## How to use msap (QUICK GUIDE)
+
+For a more detailed user guide of msap, please check this [vignette](vignettes/msap.pdf).
+
+### Preparation of datafile
+
+In order to use *msap* for analyzing your results from a MSAP experiment, you need to provide a CVS data file ([There is an example here](vignettes/example.csv)) with a binary matrix indicating the presence (coded as 1) or absence (coded as 0) of *Eco*RI-*Hpa*II and *Eco*RI-*Msp*I fragments in a bunch of samples of two or more populations/groups. 
+
+The first row should include the markers name/references, these should be ordered by primer combination (if applicable) as analysis will be seperated for them. The **first column** should provide the label for the group where the sample is included, with the aim to make comparisons between different groups. **Second column** is reserved for an arbitrary label (i.e. to name the sample). **Third column** should identify the isoschizomer with ’HPA’ or ’MSP’ (**Note that both rows for each sample should be present**). The remaining columns are for the different MSAP markers. 
+
+### Run msap
+
+Once we are in the right working directory with an appropiate data file, we can run all analyses of *msap* with a single command (change “example.csv” by the name of your datafile, keeping the quotes, and change “Example” by a custom name, keeping quotes, to identify your data):
+```r
+library(msap)
+myList <- msap("example.csv", name = "Example")
+```
+This will run all analyses, with default options, and will show an on screen text report with the results as well as returning a list called myList (or whatever you put before the <-) with useful data for further analyses. **Please refer to the [vignette](vignettes/msap.pdf) for further information about options and the different output files.**
 
 
 ## Contact
