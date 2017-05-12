@@ -225,7 +225,7 @@ msap <- function(datafile, name=datafile, no.bands="u", nDec=4, meth=TRUE, rm.re
 				plot.phylo(MSL.cluster, tip.color=tipCol, use.edge.length=T, edge.color=ecol, edge.width=3, show.tip.label=T, main="MSL")
 				legend("bottomright", as.character(levels(groups)), col=rainbow(length(np)+1)[-2], lwd=3)
 				dev.off()
-        cat("Ok!\n")
+        
 			}
 		
 			#PCoA
@@ -274,8 +274,7 @@ msap <- function(datafile, name=datafile, no.bands="u", nDec=4, meth=TRUE, rm.re
 			plot.phylo(MSL.cluster, tip.color=tipCol, use.edge.length=T, edge.color=ecol, edge.width=3, show.tip.label=T, main="AFLP")
 			legend("bottomright", as.character(levels(groups)), col=rainbow(length(np)+1)[-2], lwd=3)
 			dev.off()
-      cat("Ok!\n")
-			
+     
 		}
 		
 		#PCoA
@@ -308,9 +307,8 @@ msap <- function(datafile, name=datafile, no.bands="u", nDec=4, meth=TRUE, rm.re
 			legend("bottomright", as.character(levels(groups)), col=rainbow(length(np)+1)[-2], lwd=3)
 			dev.off()
       
-      DM.NML <- DM
-      cat("Ok!\n")
-			
+      
+ 
 		}
 		#PCoA
 		if(do.pcoa) pcoa(DM, groups, inds, name, "NML")
@@ -320,7 +318,7 @@ msap <- function(datafile, name=datafile, no.bands="u", nDec=4, meth=TRUE, rm.re
 			cat("\nPerforming AMOVA\n")
 			diffAmova(DM, groups, nDec, do.pairwisePhiST)
 		}
-		
+		DM.NML <- DM
 		if(do.mantel){
 			mtl <-mantel.randtest(DM.MSL, DM.NML, np.mantel)
 			pval<-ifelse(mtl$pvalue<0.0001, "P < 0.0001", paste("P = ",format(mtl$pvalue, digits=nDec)))
