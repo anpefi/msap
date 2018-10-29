@@ -13,7 +13,7 @@
   do.shannon=TRUE, do.amova=TRUE, do.pairwisePhiST=FALSE, 
   do.cluster=TRUE, use.groups=NULL, do.mantel=FALSE, np.mantel=1000, 
   loci.per.primer=NULL, error.rate.primer=NULL, uninformative=TRUE,
-  threshold_poly_MSL=2, threshold_poly_NML=2)
+  threshold.poly.MSL=1, threshold.poly.NML=1)
 }
 
 \arguments{
@@ -79,12 +79,12 @@
   		
 	}
 	
-	\item{threshold_poly_MSL}{
+	\item{threshold.poly.MSL}{
           	Minumum number of occurrences of each state (methylated/unmethylated) in a MSL to be defined as polymorphic. The default is 1, that gives the máximum number of polymorphic sites, as only on occurrence of any of the states is needed. 
          
 	}
   
-        \item{threshold_poly_NML}{
+        \item{threshold.poly.NML}{
           	Minumum number of occurrences of each state (band/no band) in a NML to be defined as polymorphic. The default is 1, that gives the máximum number of polymorphic sites, as only on occurrence of any of the states is needed. 
 
         }

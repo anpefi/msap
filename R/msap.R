@@ -8,7 +8,7 @@ msap <- function(datafile, name=datafile, no.bands="u", nDec=4, meth=TRUE, rm.re
                  rm.monomorphic=TRUE, do.pcoa=TRUE, do.shannon=TRUE, do.amova=TRUE, 
                  do.pairwisePhiST=FALSE, do.cluster=TRUE, use.groups=NULL, do.mantel=FALSE, 
                  np.mantel=1000, loci.per.primer=NULL, error.rate.primer=NULL, uninformative=TRUE,
-                 threshold_poly_MSL=1, threshold_poly_NML=1){
+                 threshold.poly.MSL=1, threshold.poly.NML=1){
 	msapVer <- as.character(packageVersion("msap"))
 	cat(paste("\nmsap ", msapVer, " - Statistical analysis for Methylation-Sensitive Amplification Polimorphism data\n"),sep="")
 	 
@@ -168,8 +168,8 @@ msap <- function(datafile, name=datafile, no.bands="u", nDec=4, meth=TRUE, rm.re
 			if(NML.nloci>0) matN <- as.matrix(dataMIXb[,NML])
 		}
 		
-		if(MSL.nloci>0) PolyM <- apply(matM, 2, polymorphic, threshold_poly_MSL)
-		if(NML.nloci>0) PolyN <- apply(matN, 2, polymorphic, threshold_poly_NML)
+		if(MSL.nloci>0) PolyM <- apply(matM, 2, polymorphic, threshold.poly.MSL)
+		if(NML.nloci>0) PolyN <- apply(matN, 2, polymorphic, threshold.poly.NML)
 		if(MSL.nloci>0) MSL.ploci <- length(which(PolyM))
 		else MSL.ploci <- 0
 		if(NML.nloci>0) NML.ploci <- length(which(PolyN))
