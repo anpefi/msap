@@ -1,3 +1,7 @@
 importFrom("ade4", s.class, mantel.randtest)
 importFrom("ape", nj, plot.phylo,perm.rowscols)
+importFrom("grDevices", "dev.off", "png", "rainbow")
+importFrom("graphics", "legend", "par", "plot", "points")
+importFrom("stats", "as.dist", "cmdscale", "dist", "sd", "wilcox.test")
+importFrom("utils", "packageVersion", "read.csv", "write.csv")
 export(msap,shannon)

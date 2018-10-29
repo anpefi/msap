@@ -80,12 +80,12 @@
 	}
 	
 	\item{threshold.poly.MSL}{
-          	Minumum number of occurrences of each state (methylated/unmethylated) in a MSL to be defined as polymorphic. The default is 1, that gives the máximum number of polymorphic sites, as only on occurrence of any of the states is needed. 
+          	Minumum number of occurrences of each state (methylated/unmethylated) in a MSL to be defined as polymorphic. The default is 1, that gives the maximum number of polymorphic sites, as only on occurrence of any of the states is needed. 
          
 	}
   
         \item{threshold.poly.NML}{
-          	Minumum number of occurrences of each state (band/no band) in a NML to be defined as polymorphic. The default is 1, that gives the máximum number of polymorphic sites, as only on occurrence of any of the states is needed. 
+          	Minumum number of occurrences of each state (band/no band) in a NML to be defined as polymorphic. The default is 1, that gives the maximum number of polymorphic sites, as only on occurrence of any of the states is needed. 
 
         }
 }
