@@ -16,7 +16,7 @@
 \SweaveOpts{concordance=TRUE}
 
 <<foo,include=FALSE,echo=FALSE>>=
-options(keep.source = TRUE, width = 60)
+options(keep.source = FALSE, width = 60)
 foo <- packageDescription("msap")
 @
 
@@ -161,7 +161,8 @@ meth=TRUE, rm.redundant=TRUE, rm.monomorphic=TRUE,
 do.pcoa=TRUE, do.shannon=TRUE, do.amova=TRUE, 
 do.pairwisePhiST=TRUE, do.cluster=TRUE, use.groups=NULL, 
 do.mantel=FALSE, np.mantel=1000, loci.per.primer=NULL, 
-error.rate.primer=NULL,  uninformative=TRUE)
+error.rate.primer=NULL,  uninformative=TRUE,
+threshold_poly_MSL=2, threshold_poly_NML=2)
 \end{verbatim}
 
 \begin{description}
@@ -225,6 +226,12 @@ error.rate.primer=NULL,  uninformative=TRUE)
 	\item[uninformative]{
 		This is a deprecated argument kept for compatilibility porpouses with previous versions.
 	}
+        \item[threshold_poly_MSL]{
+          	Minumum number of occurrences of each state (methylated/unmethylated) in a MSL to be defined as polymorphic. The default is 1, that gives the máximum number of polymorphic sites, as only on occurrence of any of the states is needed. 
+	}
+        \item[threshold_poly_NML]{
+          	Minumum number of occurrences of each state (band/no band) in a NML to be defined as polymorphic. The default is 1, that gives the máximum number of polymorphic sites, as only on occurrence of any of the states is needed. 
+        }
 \end{description}
 
 \section{Frequently Asked Questions}

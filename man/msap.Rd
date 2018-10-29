@@ -12,7 +12,8 @@
   rm.redundant=TRUE,   rm.monomorphic=TRUE, do.pcoa=TRUE, 
   do.shannon=TRUE, do.amova=TRUE, do.pairwisePhiST=FALSE, 
   do.cluster=TRUE, use.groups=NULL, do.mantel=FALSE, np.mantel=1000, 
-  loci.per.primer=NULL, error.rate.primer=NULL, uninformative=TRUE)
+  loci.per.primer=NULL, error.rate.primer=NULL, uninformative=TRUE,
+  threshold_poly_MSL=2, threshold_poly_NML=2)
 }
 
 \arguments{
@@ -77,10 +78,18 @@
   	Deprecated. This argument is keept for back compatibility with version 1.0.x. Contains the same information as no.bands. 
   		
 	}
+	
+	\item{threshold_poly_MSL}{
+          	Minumum number of occurrences of each state (methylated/unmethylated) in a MSL to be defined as polymorphic. The default is 1, that gives the máximum number of polymorphic sites, as only on occurrence of any of the states is needed. 
+         
+	}
   
+        \item{threshold_poly_NML}{
+          	Minumum number of occurrences of each state (band/no band) in a NML to be defined as polymorphic. The default is 1, that gives the máximum number of polymorphic sites, as only on occurrence of any of the states is needed. 
 
-
+        }
 }
+
 \details{
   	This function is the main interface of the msap package. The only required argument is a string with the name (uri) of the data file to be analysed.
    
