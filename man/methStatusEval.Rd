@@ -18,12 +18,12 @@ methStatusEval(x, error=0.05, uninformative=TRUE)
  \item{error}{
  	Repeatibility value of MSAP assays. It provides a threshold to consider methylation events as genotyping errors.
  } 
- \item{uninformative}{
- 	A logic value determining how to deal with HPA-/MSP- pattern. FALSE indicates that HPA-/MSP- stands for hypermethylated target (ignoring genetic mutation), and TRUE (default) stands for uninformative pattern (as this could be caused by genetic mutation or hypermethylation) 
+ \item{pattern}{
+ 	vector of methylation states (1 - unmethylated, 2- methylated, NA - missing data) for the four combinations of both enzymes enz1+/enz2+, enz1+/enz2-, enz1-/enz2+, enz1-/enz2-. By default (1,2,2,NA) corresponding with standard MSAP using HPA/MSP considering -/- as uninformative status. 
  }
 }
 \details{
-Individual fragments (loci) are classified as 'methylation-susceptible loci' (MSL) or 'non-methylated loci' (NML), depending on whether the observed proportion of discordant HPA/MSP scores suggestive of methylation(i.e. number of individuals with contrastinf HPA/MSP scores for the fragment divided by the total number of individuals assayed) exceeded a user-defined threshold (0.05 by default).
+Individual fragments (loci) are classified as 'methylation-susceptible loci' (MSL) or 'non-methylated loci' (NML), depending on whether the observed proportion of discordant HPA/MSP scores suggestive of methylation(i.e. number of individuals with contrastinf HPA/MSP scores for the fragment divided by the total number of individuals assayed) exceeded a user-defined threshold (0.05 by default). Using different pattern argument allows for different interpretation of the band pattern, useful for different combinations of enzymes.
 }
 
 \author{
