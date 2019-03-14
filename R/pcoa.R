@@ -4,8 +4,8 @@
 pcoa <- function(DM, groups, inds, name,surname){
 	ntt <- length(levels(groups))
 	#PCoA
-  pcol <- cmdscale(DM, k=length(inds)-1, eig=T)
-
+  pcol <- suppressWarnings(cmdscale(DM, k=length(inds)-1, eig=T))
+  
 	var <- pcol$eig / sum(pcol$eig) *100
 	var
 	var1 <- round(var[1], digits=1)
