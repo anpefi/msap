@@ -8,12 +8,15 @@
 	It performs all the analysis of MSAP data in order to asses both epigenetic and genetic diversity.   
 }
 \usage{
-	msap(datafile, name=datafile, no.bands = "u", nDec=4, meth=TRUE, 
+	msap(datafile, name=datafile, pattern=c(1,2,2,NA), 
+  nDec=4, meth=TRUE, 
   rm.redundant=TRUE,   rm.monomorphic=TRUE, do.pcoa=TRUE, 
   do.shannon=TRUE, do.amova=TRUE, do.pairwisePhiST=FALSE, 
   do.cluster=TRUE, use.groups=NULL, do.mantel=FALSE, np.mantel=1000, 
-  loci.per.primer=NULL, error.rate.primer=NULL, uninformative=TRUE,
-  threshold.poly.MSL=1, threshold.poly.NML=1)
+  loci.per.primer=NULL, error.rate.primer=NULL, 
+  enz1="HPA", enz2="MSP",
+  threshold.poly.MSL=1, threshold.poly.NML=1
+  no.bands = NULL, uninformative=NULL )
 }
 
 \arguments{
@@ -23,14 +26,10 @@
   	\item{name}{
   		a name for the dataset to be included in the output files. By default, the name of the given datafile is used.  
 	}
-	\item{no.bands}{
-  		String to indicate how to deal with HPA-/MSP- pattern in MSL, with two possible values: 'h' for hypermethylated state and 'u' for uninformative state (default). 
-  		
-  		With 'h' researcher assumes that HPA-/MSP- (no band for both isoschizomers) pattern represents full methylation of cytosines in the target (hypermethylation) ignoring the chance of genetic change in the target. This approach could be very useful when no much genetic differences are expected between samples (i.e. the same individuals are compared for different treatments). In this case HPA-/MSP- will compute as 'methylated' state in the binary matrix used for subsequent analysis.
-  		
-  		With 'u' (default value), researcher considers that pattern as uninformative as could be caused by a missing target (mutation) as well as by hypermethylation. So, in this case, HPA-/MSP- will compute as missing values in the binary matrix used for subsequent analysis.
+	\item{pattern}{
+	        vector of methylation states (1 - unmethylated, 2- methylated, NA - missing data) for the four combinations of both enzymes enz1+/enz2+, enz1+/enz2-, enz1-/enz2+, enz1-/enz2-. By default (1,2,2,NA) corresponding with standard MSAP using HPA/MSP considering -/- as uninformative status. Note that the value of this argument could be modified if using the deprecated arguments no.bands or uninformative.
 	}
-  	
+	
   	\item{nDec}{
   		number of digits of precision for floating point output.
 	}
@@ -73,12 +72,12 @@
 	\item{error.rate.primer}{
 		Gives the repeatibility value of MSAP assays for each primer combination. It provides a threshold to consider methylation events as genotyping errors.
 	}
-	
-	\item{uninformative}{
-  	Deprecated. This argument is keept for back compatibility with version 1.0.x. Contains the same information as no.bands. 
-  		
+	\item{enz1}{
+		String giving the label used in the datafile for the first enzyme. By default, as it considers standard MSAP with HPA/MSP, the value is "HPA". Note that this is case-sensitive and it should match the label given in the datafile.
 	}
-	
+        \item{enz2}{
+		String giving the label used in the datafile for the second enzyme. By default, as it considers standard MSAP with HPA/MSP, the value is "MSP". Note that this is case-sensitive and it should match the label given in the datafile.
+	}
 	\item{threshold.poly.MSL}{
           	Minumum number of occurrences of each state (methylated/unmethylated) in a MSL to be defined as polymorphic. The default is 1, that gives the maximum number of polymorphic sites, as only on occurrence of any of the states is needed. 
          
@@ -88,6 +87,19 @@
           	Minumum number of occurrences of each state (band/no band) in a NML to be defined as polymorphic. The default is 1, that gives the maximum number of polymorphic sites, as only on occurrence of any of the states is needed. 
 
         }
+        \item{no.bands}{
+        Deprecated. This argument is keept for back compatibility with version 1.1.x. Use the argument pattern instead to control the how to interpret all the patterns.
+        
+  		String to indicate how to deal with HPA-/MSP- pattern in MSL, with two possible values: 'h' for hypermethylated state and 'u' for uninformative state (default). 
+  		
+  		With 'h' researcher assumes that HPA-/MSP- (no band for both isoschizomers) pattern represents full methylation of cytosines in the target (hypermethylation) ignoring the chance of genetic change in the target. This approach could be very useful when no much genetic differences are expected between samples (i.e. the same individuals are compared for different treatments). In this case HPA-/MSP- will compute as 'methylated' state in the binary matrix used for subsequent analysis. This option makes that pattern would be c(1,2,2,2).
+  		
+  		With 'u' (default value), researcher considers that pattern as uninformative as could be caused by a missing target (mutation) as well as by hypermethylation. So, in this case, HPA-/MSP- will compute as missing values in the binary matrix used for subsequent analysis. This option makes that pattern would be c(1,2,2,NA).
+	}
+		\item{uninformative}{
+  	Deprecated. This argument is keept for back compatibility with version 1.0.x. Contains the same information as no.bands. 
+  		
+	}
 }
 
 \details{

@@ -4,11 +4,14 @@
 
 
 
-msap <- function(datafile, name=datafile, no.bands="u", nDec=4, meth=TRUE, rm.redundant=TRUE, 
+msap <- function(datafile, name=datafile, pattern=c(1,2,2,NA), 
+                 nDec=4, meth=TRUE, rm.redundant=TRUE, 
                  rm.monomorphic=TRUE, do.pcoa=TRUE, do.shannon=TRUE, do.amova=TRUE, 
                  do.pairwisePhiST=FALSE, do.cluster=TRUE, use.groups=NULL, do.mantel=FALSE, 
-                 np.mantel=1000, loci.per.primer=NULL, error.rate.primer=NULL, uninformative=TRUE,
-                 threshold.poly.MSL=1, threshold.poly.NML=1){
+                 np.mantel=1000, loci.per.primer=NULL, error.rate.primer=NULL,
+                 enz1="HPA", enz2="MSP",
+                 threshold.poly.MSL=1, threshold.poly.NML=1,
+                 no.bands=NULL, uninformative=NULL){
 	msapVer <- as.character(packageVersion("msap"))
 	cat(paste("\nmsap ", msapVer, " - Statistical analysis for Methylation-Sensitive Amplification Polimorphism data\n"),sep="")
 	 
@@ -16,15 +19,25 @@ msap <- function(datafile, name=datafile, no.bands="u", nDec=4, meth=TRUE, rm.re
 	
 	#check no.bands parameter
 	#uninformative (default)
-	if (is.character(no.bands)){
-		if(no.bands=="u") uninformative <- TRUE #uninformative (default)
-		else if(no.bands=="h") uninformative <- FALSE #assuming hypermethilated target
-		else{
-			cat("\nWARNING: no.bands argument wrong. Using default value (no.bands=\"u\")\n\n")
-			uninformative <- TRUE #uninformative (default)
-		}
+	if (!is.null(no.bands)){  #DEPRECATED ARGUMENT
+	        cat("\nWARNING: using deprecated no.bands argument. This would overwrite the pattern argument.\n\n")
+	        if (is.character(no.bands)){
+	                if(no.bands=="u") uninformative <- TRUE #uninformative (default)
+	                else if(no.bands=="h") uninformative <- FALSE #assuming hypermethilated target
+	                else{
+	                        cat("\nWARNING: no.bands argument wrong. Using default value (no.bands=\"u\")\n\n")
+	                        uninformative <- TRUE #uninformative (default)
+	                }
+	        }
+	        else cat("\nWARNING: no.bands argument wrong. Using default value (no.bands=\"u\")\n\n")
 	}
-	else cat("\nWARNING: no.bands argument wrong. Using default value (no.bands=\"u\")\n\n")
+	#Check uniformative parameter
+	if(!is.null(uninformative)){
+	        if(is.null(no.bands)) cat("\nWARNING: using deprecated uninformative argument. This would overwrite the pattern argument.\n\n")
+	        if(!uninformative) pattern<-c(1,2,2,2)
+	        if(uninformative) patter<-c(1,2,2,NA)
+	}
+	
 	
 	#check loci.per.primer
 	n.primer <- 1 #default
@@ -74,9 +87,9 @@ msap <- function(datafile, name=datafile, no.bands="u", nDec=4, meth=TRUE, rm.re
     #Check enzymes
 	  temp <- factor(data[,3])
 	
-	  if(!is.element("HPA",levels(temp))) stop("HPA missing. The third column should include both HPA and MSP (capital letters)")
-	  if(!is.element("MSP",levels(temp))) stop("MSP missing. The third column should include both HPA and MSP (capital letters)")
-	  if(!table(temp)["MSP"]==table(temp)["HPA"]) stop("There are not equal number of rows for HPA and MSP, please check ", datafile)
+	  if(!is.element(enz1,levels(temp))) stop(enz1, " missing. The third column should include both ",enz1," and ",enz2)
+	  if(!is.element(enz2,levels(temp))) stop(enz2, " missing. The third column should include both ",enz1," and ",enz2)
+	  if(!table(temp)[enz2]==table(temp)[enz1]) stop("There are not equal number of rows for ",enz1," and ",enz2,", please check ", datafile)
 	}
 	#Check other values than 0/1
 	vals<-levels(factor(as.matrix(data[,4:length(data[1,])])))
@@ -111,27 +124,27 @@ msap <- function(datafile, name=datafile, no.bands="u", nDec=4, meth=TRUE, rm.re
 	if(meth){ #meth=TRUE -> MSAP
 	
 		############ FRAGMENT CLASSIFICATION ##############
-		inds <- as.character(data[data[,3]=="HPA",2])
-		groups <- factor(data[data[,3]=="HPA",1])  #Needed to refactor here 
+		inds <- as.character(data[data[,3]==enz1,2])
+		groups <- factor(data[data[,3]==enz1,1])  #Needed to refactor here 
 		ntt <- length(levels(groups))
 		cat("Number of samples/individuals: ",length(data[,1])/2,"\n")
 		cat("Number of groups/populations: ",ntt,"\n")
 		cat("Number of primer combinations: ",n.primer,"\n")
 		cat("Loci per primer combinations ",loci.per.primer,"\n")
 		cat("Error rates per primer combination: ",error.rate.primer,"\n")
-		dataMSP <- data[data[,3]=="MSP",4:length(data[1,])]
-		dataHPA <- data[data[,3]=="HPA",4:length(data[1,])]
+		dataMSP <- data[data[,3]==enz2,4:length(data[1,])]
+		dataHPA <- data[data[,3]==enz1,4:length(data[1,])]
 		dataMIX <- dataHPA*10+dataMSP
 		#check methStatus within different primer combinations (since 1.1.0)
 		Met <- NULL
 		for (i in 1:n.primer){
-			temp <- apply(dataMIX[,which(primer.mask==i)], 2, methStatusEval, error=error.rate.primer[i], uninformative=uninformative)
+			temp <- apply(dataMIX[,which(primer.mask==i)], 2, methStatusEval, error=error.rate.primer[i], pattern=pattern)
 			Met <- c(Met,temp)
 			cat("Primer: ",i,"\n")
 			cat("--Number of Methylation-Susceptible Loci (MSL): ",length(which(temp)),"\n")
 			cat("--Number of No Methylated Loci (NML): ",length(which(!temp)),"\n\n")
 		}
-		#Met <- apply(dataMIX, 2, methStatusEval, type=uninformative)
+		
 		MSL <- which(Met)
 		NML <- which(!Met)
 		MSL.nloci <- length(Met[MSL])
@@ -140,34 +153,24 @@ msap <- function(datafile, name=datafile, no.bands="u", nDec=4, meth=TRUE, rm.re
 		cat("Number of Methylation-Susceptible Loci (MSL): ",MSL.nloci,"\n")
 		cat("Number of No Methylated Loci (NML): ",NML.nloci,"\n\n")
 				
+		#Tranformation of the data depending on the methylation pattern
 		
-		if (uninformative){
-		#This transformation assumes that HPA-/MSP- pattern is uninformative as it could represent full methylation of cytosines in the target or that target is missing by mutation. 
-		#Herrera & Bazaga 2010
-			
-			if(MSL.nloci>0) dataMSL <- dataMIX[,MSL]
-			if(NML.nloci>0) dataNML <- dataMIX[,NML]
-			if(MSL.nloci>0){
-				dataMSL[dataMSL==0] <- NA
-				dataMSL[dataMSL==1] <- 2
-				dataMSL[dataMSL==11] <- 1
-				dataMSL[dataMSL==10] <- 2
-			}
-			if(NML.nloci>0) dataNML <- ifelse(dataNML==0, 1, 2)
-		
-			if(MSL.nloci>0) matM <- as.matrix(dataMSL)
-			if(NML.nloci>0) matN <- as.matrix(dataNML)
+		if(MSL.nloci>0) dataMSL <- dataMIX[,MSL]
+		if(NML.nloci>0) dataNML <- dataMIX[,NML]
+		if(MSL.nloci>0){
+		        dataMSL[dataMSL==1] <- pattern[3] #This has to be the first in being evaluated
+		        dataMSL[dataMSL==11] <- pattern[1]
+		        dataMSL[dataMSL==10] <- pattern[2]
+		        
+		        dataMSL[dataMSL==0] <- pattern[4]
+		        
 		}
-		else 
-		{
-			#This transformation assumes that HPA-/MSP- pattern represents full methylation (hypermethilation) of cytosines in the target ignoring possible genetic differences. Thus, all bands are scored as methylation.
-			#Lu et al. 2008; Gupta et al. 2012
-
-			dataMIXb <- ifelse(dataMIX==11, 1, 2)  #changed in 1.1.2 for consistency to 1:unmmethylated 2:methylated. Previous values were not affect to the results from the analysis present at the moment
-			if(MSL.nloci>0) matM <- as.matrix(dataMIXb[,MSL])
-			if(NML.nloci>0) matN <- as.matrix(dataMIXb[,NML])
-		}
+		if(NML.nloci>0) dataNML <- ifelse(dataNML==0, 1, 2)
 		
+		if(MSL.nloci>0) matM <- as.matrix(dataMSL)
+		if(NML.nloci>0) matN <- as.matrix(dataNML)
+		
+                #Check polymorphism of the transformed data
 		if(MSL.nloci>0) PolyM <- apply(matM, 2, polymorphic, threshold.poly.MSL)
 		if(NML.nloci>0) PolyN <- apply(matN, 2, polymorphic, threshold.poly.NML)
 		if(MSL.nloci>0) MSL.ploci <- length(which(PolyM))
@@ -197,7 +200,7 @@ msap <- function(datafile, name=datafile, no.bands="u", nDec=4, meth=TRUE, rm.re
 		if(NML.nloci>1) NML.I <- apply(matN, 2, shannon)
 		if(MSL.nloci>1)cat("\nShannon's Diversity Index \n")
 		if(MSL.nloci>1) cat("MSL: I = ", mean(MSL.I, na.rm=T),"  (SD: ", sd(MSL.I, na.rm=T),")\n")
-		if(NML.nloci>1){
+		if(NML.nloci>1 && MSL.nloci>1){
 		cat("NML: I = ", mean(NML.I, na.rm=T),"  (SD: ", sd(NML.I, na.rm=T),")\n")
 		wt<-wilcox.test(MSL.I,NML.I)
 		pval<-ifelse(wt$p.value<0.0001, "P < 0.0001", paste("P = ",wt$p.value))
@@ -211,7 +214,7 @@ msap <- function(datafile, name=datafile, no.bands="u", nDec=4, meth=TRUE, rm.re
 		if(MSL.nloci>1){
 		
 			cat("\n\n*****************************\nAnalysis of MSL\n")
-			meth.rep <- repMet(dataMIX[,MSL], groups, nDec)
+			meth.rep <- repMet(dataMIX[,MSL], groups, nDec, enz1, enz2)
 		  cat("\n\n")
 
 

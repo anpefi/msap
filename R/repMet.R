@@ -1,4 +1,4 @@
-repMet <-function(dataM,groups,nDec){
+repMet <-function(dataM,groups,nDec, enz1, enz2){
 	cat("Report of methylation levels \n")
 	dataM[dataM==11]<-"u"
 	dataM[dataM==10]<-"h"
@@ -6,12 +6,24 @@ repMet <-function(dataM,groups,nDec){
 	dataM[dataM==0]<-"f"
 	dataM <- split(dataM,groups)
 	
+	if(identical(pattern,c(1,2,2,NA))) #Standard MSAP HPA/MSP
+	        metLabels <- c("(Unmethylated)","(Hemimethylated)","Internal C methylation","Uninformative")
+	else{
+	        metLabels <- c("(Unmethylated)","(Methylated)")[pattern]
+	        metLabels[is.na(metLabels)] <- "(Uninformative)"
+	}
+	
 	ns<-names(dataM)
 	res<-matrix(ncol=length(ns), nrow=4)
 	colnames(res)<-ns
-	rownames(res)<-c("HPA+/MSP+ (Unmethylated)", "HPA+/MSP- (Hemimethylated)","HPA-/MSP+ (Internal cytosine methylation)","HPA-/MSP- (Full methylation or absence of target)")
+	rownames(res)<-c(
+	        paste0(enz1,"+/",enz2,"+ ",metLabels[1]),
+	        paste0(enz1,"+/",enz2,"- ", metLabels[2]),
+	        paste0(enz1,"-/",enz2,"+ ", metLabels[3]),
+	        paste0(enz1,"-/",enz2,"- ", metLabels[4])
+	        )
 	for(x in seq_along(dataM)){
-	res[1,x]<- as.numeric(table(as.matrix(dataM[[x]]))["u"])
+	res[1,x]<- as.numeric(table(as.matrix(dataM[[x]]))["u"])  #Can I improve this?
 	res[2,x]<- as.numeric(table(as.matrix(dataM[[x]]))["h"])
 	res[3,x]<- as.numeric(table(as.matrix(dataM[[x]]))["i"])
 	res[4,x]<- as.numeric(table(as.matrix(dataM[[x]]))["f"])
