@@ -266,6 +266,9 @@ msap <- function(datafile, name=datafile, pattern=c(1,2,2,NA),
 		cat("Number of polymorphic AFLP: ",NML.ploci," (",format(NML.ploci/NML.nloci*100,digits=1),"% of total)\n\n")
 		NML.nloci <- NML.ploci
 		
+		if(NML.nloci>1) AFLP.I <- apply(matN, 2, shannon)
+		if(NML.nloci>1)cat("\nShannon's Diversity Index \n")
+		if(NML.nloci>1) cat("AFLP: I = ", mean(AFLP.I, na.rm=T),"  (SD: ", sd(AFLP.I, na.rm=T),")\n\n")
 		
 		DM<- dist(matN, method="euclidean", upper=T, diag=T)
 		if(do.cluster){
