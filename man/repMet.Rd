@@ -8,7 +8,7 @@
         Prints a report of the relative number or different HPA-MSP band patterns in all groups  
 }
 \usage{
-        repMet(dataM,groups,nDec,enz1="HPA",enz2="MSP", pattern=c(1,2,2,NA))
+        repMet(dataM,groups,nDec,enz1,enz2, pattern=c(1,2,2,NA))
 
 }
 \arguments{

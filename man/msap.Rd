@@ -9,14 +9,13 @@
 }
 \usage{
 	msap(datafile, name=datafile, pattern=c(1,2,2,NA), 
-  nDec=4, meth=TRUE, 
-  rm.redundant=TRUE,   rm.monomorphic=TRUE, do.pcoa=TRUE, 
-  do.shannon=TRUE, do.amova=TRUE, do.pairwisePhiST=FALSE, 
-  do.cluster=TRUE, use.groups=NULL, do.mantel=FALSE, np.mantel=1000, 
-  loci.per.primer=NULL, error.rate.primer=NULL, 
-  enz1="HPA", enz2="MSP",
-  threshold.poly.MSL=1, threshold.poly.NML=1
-  no.bands = NULL, uninformative=NULL )
+                 nDec=4, meth=TRUE, rm.redundant=TRUE, 
+                 rm.monomorphic=TRUE, do.pcoa=TRUE, do.shannon=TRUE, do.amova=TRUE, 
+                 do.pairwisePhiST=FALSE, do.cluster=TRUE, use.groups=NULL, do.mantel=FALSE, 
+                 np.mantel=1000, loci.per.primer=NULL, error.rate.primer=NULL,
+                 enz1="HPA", enz2="MSP",
+                 threshold.poly.MSL=1, threshold.poly.NML=1,
+                 no.bands=NULL, uninformative=NULL)
 }
 
 \arguments{
@@ -96,8 +95,8 @@
   		
   		With 'u' (default value), researcher considers that pattern as uninformative as could be caused by a missing target (mutation) as well as by hypermethylation. So, in this case, HPA-/MSP- will compute as missing values in the binary matrix used for subsequent analysis. This option makes that pattern would be c(1,2,2,NA).
 	}
-		\item{uninformative}{
-  	Deprecated. This argument is keept for back compatibility with version 1.0.x. Contains the same information as no.bands. 
+	\item{uninformative}{
+        	Deprecated. This argument is keept for back compatibility with version 1.0.x. Contains the same information as no.bands. 
   		
 	}
 }

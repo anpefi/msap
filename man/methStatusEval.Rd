@@ -8,9 +8,9 @@ classify a locus as either MSL or NML.
 Classify a locus as either 'methylation-susceptible locus' (MSL) or 'non-methylated locus' (NML). See Details.  
 }
 \usage{
-methStatusEval(x, error=0.05, uninformative=TRUE)
-
+methStatusEval(x, error=0.05, pattern=c(1,2,2,NA))
 }
+
 \arguments{
   \item{x}{
   A list of mixed band patterns for a given fragment across all the samples. Values of 11, 10, 1 and 0 represent patterns HPA+/MSP+,HPA+/MSP-,HPA-/MSP+,HPA-/MSP-, respectively.
