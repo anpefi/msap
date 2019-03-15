@@ -214,7 +214,7 @@ msap <- function(datafile, name=datafile, pattern=c(1,2,2,NA),
 		if(MSL.nloci>1){
 		
 			cat("\n\n*****************************\nAnalysis of MSL\n")
-			meth.rep <- repMet(dataMIX[,MSL], groups, nDec, enz1, enz2)
+			meth.rep <- repMet(dataMIX[,MSL], groups, nDec, enz1, enz2,pattern)
 		  cat("\n\n")
 
 

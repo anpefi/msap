@@ -8,7 +8,7 @@
         Prints a report of the relative number or different HPA-MSP band patterns in all groups  
 }
 \usage{
-        repMet(dataM,groups,nDec,enz1="HPA",enz2="MSP")
+        repMet(dataM,groups,nDec,enz1="HPA",enz2="MSP", pattern=c(1,2,2,NA))
 
 }
 \arguments{
@@ -27,6 +27,9 @@
 	}
         \item{enz2}{
 		String giving the label used in the datafile for the second enzyme. By default, as it considers standard MSAP with HPA/MSP, the value is "MSP". Note that this is case-sensitive and it should match the label given in the datafile.
+	}
+	\item{pattern}{
+	        vector of methylation states (1 - unmethylated, 2- methylated, NA - missing data) for the four combinations of both enzymes enz1+/enz2+, enz1+/enz2-, enz1-/enz2+, enz1-/enz2-. By default (1,2,2,NA) corresponding with standard MSAP using HPA/MSP considering -/- as uninformative status. Note that the value of this argument could be modified if using the deprecated arguments no.bands or uninformative.
 	}
 }
 

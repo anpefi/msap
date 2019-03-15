@@ -1,4 +1,4 @@
-repMet <-function(dataM,groups,nDec, enz1, enz2){
+repMet <-function(dataM,groups,nDec, enz1, enz2, pattern=c(1,2,2,NA)){
 	cat("Report of methylation levels \n")
 	dataM[dataM==11]<-"u"
 	dataM[dataM==10]<-"h"
@@ -6,8 +6,8 @@ repMet <-function(dataM,groups,nDec, enz1, enz2){
 	dataM[dataM==0]<-"f"
 	dataM <- split(dataM,groups)
 	
-	if(identical(pattern,c(1,2,2,NA))) #Standard MSAP HPA/MSP
-	        metLabels <- c("(Unmethylated)","(Hemimethylated)","Internal C methylation","Uninformative")
+	if(identical(pattern,c(1,2,2,NA)) && enz1=="HPA" && enz2=="MSP") #Standard MSAP HPA/MSP
+	        metLabels <- c("(Unmethylated)","(Hemimethylated)","(Internal C methylation)","(Uninformative)")
 	else{
 	        metLabels <- c("(Unmethylated)","(Methylated)")[pattern]
 	        metLabels[is.na(metLabels)] <- "(Uninformative)"
